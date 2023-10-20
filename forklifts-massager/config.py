@@ -112,3 +112,8 @@ cities = [
     "Saint Petersburg",
     "Almaty"
 ]
+rabbit = {"host":"81.31.244.133",
+          "port":"5672",
+          "exchange":"integration",
+          "routing_key": "forklift-event",
+          "queue":"forklifts"}
