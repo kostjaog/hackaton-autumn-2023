@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum loader_status {
+  WAITING_ORDER
+  PROCESSING_ORDER
+  ENDING_ORDER
+}
+
+enum order_status {
+  CREATED
+  PROCESSING
+  DONE
+}
+
+model warehouse {
+  id  String  @default(uuid())  @id
+
+  loaders forklift[]  
+  sensors sensor[]
+}
+
+model order {
+  id  String  @default(uuid()) @id
+
+  status  order_status  @default(CREATED)
+  created_at  DateTime  @default(now())
+  ended_at    DateTime
+
+  path_id String
+  path  path  @relation(fields: [path_id], references: [id])
+
+  check_points_time forklift_step[]
+}
+
+model forklift_step {
+  id  String  @default(uuid()) @id
+  point_name  String
+  time  DateTime
+
+  order_id  String
+  order order @relation(fields: [order_id], references: [id])
+}
+
+model forklift {
+  id  String  @default(uuid()) @id
+  warehouse_id  String
+  warehouse warehouse @relation(fields: [warehouse_id], references: [id])
+  status  loader_status @default(WAITING_ORDER)
+  last_tm_date  DateTime
+  next_tm_date  DateTime
+}
+
+model path {
+  id  String  @default(uuid()) @id
+  target_name String
+  check_points  check_point[]
+
+  orders  order[]
+}
+
+model check_point {
+  id  String  @default(uuid()) @id
+  name  String
+  next_check_point_distance Int
+
+  path_id String
+  path  path  @relation(fields: [path_id], references: [id])
+}
+
+model sensor {
+  id  String  @default(uuid()) @id
+  name  String
+
+  warehouse_id  String
+  warehouse warehouse @relation(fields: [warehouse_id], references: [id])
+}
