@@ -16,7 +16,7 @@ exports.WarehousesController = void 0;
 const common_1 = require("@nestjs/common");
 const warehouses_service_1 = require("./warehouses.service");
 const create_warehouse_dto_1 = require("./dto/create-warehouse.dto");
-const update_warehouse_dto_1 = require("./dto/update-warehouse.dto");
+const swagger_1 = require("@nestjs/swagger");
 let WarehousesController = class WarehousesController {
     constructor(warehousesService) {
         this.warehousesService = warehousesService;
@@ -28,13 +28,10 @@ let WarehousesController = class WarehousesController {
         return this.warehousesService.findAll();
     }
     findOne(id) {
-        return this.warehousesService.findOne(+id);
-    }
-    update(id, updateWarehouseDto) {
-        return this.warehousesService.update(+id, updateWarehouseDto);
+        return this.warehousesService.findOne(id);
     }
     remove(id) {
-        return this.warehousesService.remove(+id);
+        return this.warehousesService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], WarehousesController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_warehouse_dto_1.UpdateWarehouseDto]),
-    __metadata("design:returntype", void 0)
-], WarehousesController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], WarehousesController.prototype, "remove", null);
 WarehousesController = __decorate([
+    (0, swagger_1.ApiTags)('warehouses'),
     (0, common_1.Controller)('warehouses'),
     __metadata("design:paramtypes", [warehouses_service_1.WarehousesService])
 ], WarehousesController);

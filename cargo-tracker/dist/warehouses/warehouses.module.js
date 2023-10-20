@@ -10,12 +10,15 @@ exports.WarehousesModule = void 0;
 const common_1 = require("@nestjs/common");
 const warehouses_service_1 = require("./warehouses.service");
 const warehouses_controller_1 = require("./warehouses.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let WarehousesModule = class WarehousesModule {
 };
 WarehousesModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         controllers: [warehouses_controller_1.WarehousesController],
-        providers: [warehouses_service_1.WarehousesService]
+        providers: [warehouses_service_1.WarehousesService],
+        exports: [warehouses_service_1.WarehousesService],
     })
 ], WarehousesModule);
 exports.WarehousesModule = WarehousesModule;

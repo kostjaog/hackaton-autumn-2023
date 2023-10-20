@@ -16,7 +16,7 @@ exports.SensorsController = void 0;
 const common_1 = require("@nestjs/common");
 const sensors_service_1 = require("./sensors.service");
 const create_sensor_dto_1 = require("./dto/create-sensor.dto");
-const update_sensor_dto_1 = require("./dto/update-sensor.dto");
+const swagger_1 = require("@nestjs/swagger");
 let SensorsController = class SensorsController {
     constructor(sensorsService) {
         this.sensorsService = sensorsService;
@@ -28,13 +28,10 @@ let SensorsController = class SensorsController {
         return this.sensorsService.findAll();
     }
     findOne(id) {
-        return this.sensorsService.findOne(+id);
-    }
-    update(id, updateSensorDto) {
-        return this.sensorsService.update(+id, updateSensorDto);
+        return this.sensorsService.findOne(id);
     }
     remove(id) {
-        return this.sensorsService.remove(+id);
+        return this.sensorsService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SensorsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_sensor_dto_1.UpdateSensorDto]),
-    __metadata("design:returntype", void 0)
-], SensorsController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], SensorsController.prototype, "remove", null);
 SensorsController = __decorate([
+    (0, swagger_1.ApiTags)('sensors'),
     (0, common_1.Controller)('sensors'),
     __metadata("design:paramtypes", [sensors_service_1.SensorsService])
 ], SensorsController);

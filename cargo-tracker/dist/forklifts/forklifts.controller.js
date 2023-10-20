@@ -16,7 +16,7 @@ exports.ForkliftsController = void 0;
 const common_1 = require("@nestjs/common");
 const forklifts_service_1 = require("./forklifts.service");
 const create_forklift_dto_1 = require("./dto/create-forklift.dto");
-const update_forklift_dto_1 = require("./dto/update-forklift.dto");
+const swagger_1 = require("@nestjs/swagger");
 let ForkliftsController = class ForkliftsController {
     constructor(forkliftsService) {
         this.forkliftsService = forkliftsService;
@@ -28,13 +28,10 @@ let ForkliftsController = class ForkliftsController {
         return this.forkliftsService.findAll();
     }
     findOne(id) {
-        return this.forkliftsService.findOne(+id);
-    }
-    update(id, updateForkliftDto) {
-        return this.forkliftsService.update(+id, updateForkliftDto);
+        return this.forkliftsService.findOne(id);
     }
     remove(id) {
-        return this.forkliftsService.remove(+id);
+        return this.forkliftsService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ForkliftsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_forklift_dto_1.UpdateForkliftDto]),
-    __metadata("design:returntype", void 0)
-], ForkliftsController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ForkliftsController.prototype, "remove", null);
 ForkliftsController = __decorate([
+    (0, swagger_1.ApiTags)('forklifts'),
     (0, common_1.Controller)('forklifts'),
     __metadata("design:paramtypes", [forklifts_service_1.ForkliftsService])
 ], ForkliftsController);

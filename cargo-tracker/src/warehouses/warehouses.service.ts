@@ -1,26 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { warehouse } from '@prisma/client';
 
 @Injectable()
 export class WarehousesService {
-  create(createWarehouseDto: CreateWarehouseDto) {
-    return 'This action adds a new warehouse';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  create(createWarehouseDto: CreateWarehouseDto): Promise<warehouse> {
+    try {
+      return this.prismaService.warehouse.create({
+        data: {
+          coordX: createWarehouseDto.coordX,
+          coordY: createWarehouseDto.coordY,
+        },
+      });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  findAll() {
-    return `This action returns all warehouses`;
+  findAll(): Promise<warehouse[]> {
+    try {
+      return this.prismaService.warehouse.findMany();
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} warehouse`;
+  findOne(id: string) {
+    try {
+      return this.prismaService.warehouse.findUnique({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  update(id: number, updateWarehouseDto: UpdateWarehouseDto) {
-    return `This action updates a #${id} warehouse`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} warehouse`;
+  async remove(id: string): Promise<warehouse> {
+    try {
+      const candidate = await this.prismaService.warehouse.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!candidate) {
+        throw new HttpException(
+          'Waregouse with provided ID does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return this.prismaService.warehouse.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 }

@@ -1,9 +1,11 @@
 import { CreateForkliftDto } from './dto/create-forklift.dto';
-import { UpdateForkliftDto } from './dto/update-forklift.dto';
+import { forklift } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 export declare class ForkliftsService {
-    create(createForkliftDto: CreateForkliftDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateForkliftDto: UpdateForkliftDto): string;
-    remove(id: number): string;
+    private readonly prismaService;
+    constructor(prismaService: PrismaService);
+    create(createForkliftDto: CreateForkliftDto): Promise<forklift>;
+    findAll(): Promise<forklift[]>;
+    findOne(id: string): Promise<forklift>;
+    remove(id: string): Promise<forklift>;
 }

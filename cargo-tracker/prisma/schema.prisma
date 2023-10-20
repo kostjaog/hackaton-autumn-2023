@@ -22,6 +22,9 @@ enum order_status {
 model warehouse {
   id  String  @default(uuid())  @id
 
+  coordX  String?
+  coordY  String?
+
   loaders forklift[]  
   sensors sensor[]
 }
@@ -31,7 +34,10 @@ model order {
 
   status  order_status  @default(CREATED)
   created_at  DateTime  @default(now())
-  ended_at    DateTime
+  ended_at    DateTime?
+
+  forklift_id String
+  forklift  forklift @relation(fields: [forklift_id], references: [id])
 
   path_id String
   path  path  @relation(fields: [path_id], references: [id])
@@ -53,8 +59,11 @@ model forklift {
   warehouse_id  String
   warehouse warehouse @relation(fields: [warehouse_id], references: [id])
   status  loader_status @default(WAITING_ORDER)
-  last_tm_date  DateTime
-  next_tm_date  DateTime
+  orders  order[]
+  last_tm_date  DateTime?
+  next_tm_date  DateTime?
+
+  average_speed Int?
 }
 
 model path {
@@ -76,7 +85,7 @@ model check_point {
 
 model sensor {
   id  String  @default(uuid()) @id
-  name  String
+  name  String @unique
 
   warehouse_id  String
   warehouse warehouse @relation(fields: [warehouse_id], references: [id])

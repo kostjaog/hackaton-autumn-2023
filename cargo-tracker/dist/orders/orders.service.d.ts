@@ -1,9 +1,11 @@
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { order } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 export declare class OrdersService {
-    create(createOrderDto: CreateOrderDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateOrderDto: UpdateOrderDto): string;
-    remove(id: number): string;
+    private readonly prismaService;
+    constructor(prismaService: PrismaService);
+    create(createOrderDto: CreateOrderDto): Promise<order>;
+    findAll(): Promise<order[]>;
+    findOne(id: string): Promise<order>;
+    remove(id: string): Promise<order>;
 }

@@ -16,7 +16,7 @@ exports.OrdersController = void 0;
 const common_1 = require("@nestjs/common");
 const orders_service_1 = require("./orders.service");
 const create_order_dto_1 = require("./dto/create-order.dto");
-const update_order_dto_1 = require("./dto/update-order.dto");
+const swagger_1 = require("@nestjs/swagger");
 let OrdersController = class OrdersController {
     constructor(ordersService) {
         this.ordersService = ordersService;
@@ -28,13 +28,10 @@ let OrdersController = class OrdersController {
         return this.ordersService.findAll();
     }
     findOne(id) {
-        return this.ordersService.findOne(+id);
-    }
-    update(id, updateOrderDto) {
-        return this.ordersService.update(+id, updateOrderDto);
+        return this.ordersService.findOne(id);
     }
     remove(id) {
-        return this.ordersService.remove(+id);
+        return this.ordersService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_order_dto_1.UpdateOrderDto]),
-    __metadata("design:returntype", void 0)
-], OrdersController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], OrdersController.prototype, "remove", null);
 OrdersController = __decorate([
+    (0, swagger_1.ApiTags)('orders'),
     (0, common_1.Controller)('orders'),
     __metadata("design:paramtypes", [orders_service_1.OrdersService])
 ], OrdersController);

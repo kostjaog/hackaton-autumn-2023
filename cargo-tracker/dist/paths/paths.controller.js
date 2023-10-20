@@ -16,7 +16,7 @@ exports.PathsController = void 0;
 const common_1 = require("@nestjs/common");
 const paths_service_1 = require("./paths.service");
 const create_path_dto_1 = require("./dto/create-path.dto");
-const update_path_dto_1 = require("./dto/update-path.dto");
+const swagger_1 = require("@nestjs/swagger");
 let PathsController = class PathsController {
     constructor(pathsService) {
         this.pathsService = pathsService;
@@ -28,13 +28,10 @@ let PathsController = class PathsController {
         return this.pathsService.findAll();
     }
     findOne(id) {
-        return this.pathsService.findOne(+id);
-    }
-    update(id, updatePathDto) {
-        return this.pathsService.update(+id, updatePathDto);
+        return this.pathsService.findOne(id);
     }
     remove(id) {
-        return this.pathsService.remove(+id);
+        return this.pathsService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PathsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_path_dto_1.UpdatePathDto]),
-    __metadata("design:returntype", void 0)
-], PathsController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PathsController.prototype, "remove", null);
 PathsController = __decorate([
+    (0, swagger_1.ApiTags)('paths'),
     (0, common_1.Controller)('paths'),
     __metadata("design:paramtypes", [paths_service_1.PathsService])
 ], PathsController);

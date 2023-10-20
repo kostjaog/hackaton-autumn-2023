@@ -10,12 +10,15 @@ exports.SensorsModule = void 0;
 const common_1 = require("@nestjs/common");
 const sensors_service_1 = require("./sensors.service");
 const sensors_controller_1 = require("./sensors.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let SensorsModule = class SensorsModule {
 };
 SensorsModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         controllers: [sensors_controller_1.SensorsController],
-        providers: [sensors_service_1.SensorsService]
+        providers: [sensors_service_1.SensorsService],
+        exports: [sensors_service_1.SensorsService],
     })
 ], SensorsModule);
 exports.SensorsModule = SensorsModule;

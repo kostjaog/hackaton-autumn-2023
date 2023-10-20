@@ -10,12 +10,15 @@ exports.ForkliftStepsModule = void 0;
 const common_1 = require("@nestjs/common");
 const forklift_steps_service_1 = require("./forklift-steps.service");
 const forklift_steps_controller_1 = require("./forklift-steps.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let ForkliftStepsModule = class ForkliftStepsModule {
 };
 ForkliftStepsModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         controllers: [forklift_steps_controller_1.ForkliftStepsController],
-        providers: [forklift_steps_service_1.ForkliftStepsService]
+        providers: [forklift_steps_service_1.ForkliftStepsService],
+        exports: [forklift_steps_service_1.ForkliftStepsService],
     })
 ], ForkliftStepsModule);
 exports.ForkliftStepsModule = ForkliftStepsModule;

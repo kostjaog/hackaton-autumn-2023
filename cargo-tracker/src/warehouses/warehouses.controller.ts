@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { WarehousesService } from './warehouses.service';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('warehouses')
 @Controller('warehouses')
 export class WarehousesController {
   constructor(private readonly warehousesService: WarehousesService) {}
@@ -19,16 +20,11 @@ export class WarehousesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.warehousesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
-    return this.warehousesService.update(+id, updateWarehouseDto);
+    return this.warehousesService.findOne(id);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.warehousesService.remove(+id);
+    return this.warehousesService.remove(id);
   }
 }

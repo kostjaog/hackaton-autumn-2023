@@ -10,12 +10,15 @@ exports.PathsModule = void 0;
 const common_1 = require("@nestjs/common");
 const paths_service_1 = require("./paths.service");
 const paths_controller_1 = require("./paths.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let PathsModule = class PathsModule {
 };
 PathsModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         controllers: [paths_controller_1.PathsController],
-        providers: [paths_service_1.PathsService]
+        providers: [paths_service_1.PathsService],
+        exports: [paths_service_1.PathsService],
     })
 ], PathsModule);
 exports.PathsModule = PathsModule;

@@ -16,7 +16,7 @@ exports.CheckPointsController = void 0;
 const common_1 = require("@nestjs/common");
 const check_points_service_1 = require("./check-points.service");
 const create_check_point_dto_1 = require("./dto/create-check-point.dto");
-const update_check_point_dto_1 = require("./dto/update-check-point.dto");
+const swagger_1 = require("@nestjs/swagger");
 let CheckPointsController = class CheckPointsController {
     constructor(checkPointsService) {
         this.checkPointsService = checkPointsService;
@@ -28,13 +28,10 @@ let CheckPointsController = class CheckPointsController {
         return this.checkPointsService.findAll();
     }
     findOne(id) {
-        return this.checkPointsService.findOne(+id);
-    }
-    update(id, updateCheckPointDto) {
-        return this.checkPointsService.update(+id, updateCheckPointDto);
+        return this.checkPointsService.findOne(id);
     }
     remove(id) {
-        return this.checkPointsService.remove(+id);
+        return this.checkPointsService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CheckPointsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_check_point_dto_1.UpdateCheckPointDto]),
-    __metadata("design:returntype", void 0)
-], CheckPointsController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CheckPointsController.prototype, "remove", null);
 CheckPointsController = __decorate([
+    (0, swagger_1.ApiTags)('check-points'),
     (0, common_1.Controller)('check-points'),
     __metadata("design:paramtypes", [check_points_service_1.CheckPointsService])
 ], CheckPointsController);

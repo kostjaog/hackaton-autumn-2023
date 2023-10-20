@@ -16,7 +16,7 @@ exports.ForkliftStepsController = void 0;
 const common_1 = require("@nestjs/common");
 const forklift_steps_service_1 = require("./forklift-steps.service");
 const create_forklift_step_dto_1 = require("./dto/create-forklift-step.dto");
-const update_forklift_step_dto_1 = require("./dto/update-forklift-step.dto");
+const swagger_1 = require("@nestjs/swagger");
 let ForkliftStepsController = class ForkliftStepsController {
     constructor(forkliftStepsService) {
         this.forkliftStepsService = forkliftStepsService;
@@ -28,13 +28,10 @@ let ForkliftStepsController = class ForkliftStepsController {
         return this.forkliftStepsService.findAll();
     }
     findOne(id) {
-        return this.forkliftStepsService.findOne(+id);
-    }
-    update(id, updateForkliftStepDto) {
-        return this.forkliftStepsService.update(+id, updateForkliftStepDto);
+        return this.forkliftStepsService.findOne(id);
     }
     remove(id) {
-        return this.forkliftStepsService.remove(+id);
+        return this.forkliftStepsService.remove(id);
     }
 };
 __decorate([
@@ -58,14 +55,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ForkliftStepsController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_forklift_step_dto_1.UpdateForkliftStepDto]),
-    __metadata("design:returntype", void 0)
-], ForkliftStepsController.prototype, "update", null);
-__decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -73,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ForkliftStepsController.prototype, "remove", null);
 ForkliftStepsController = __decorate([
+    (0, swagger_1.ApiTags)('forklift-steps'),
     (0, common_1.Controller)('forklift-steps'),
     __metadata("design:paramtypes", [forklift_steps_service_1.ForkliftStepsService])
 ], ForkliftStepsController);

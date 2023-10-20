@@ -1,1 +1,6 @@
-export class CreateForkliftDto {}
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateForkliftDto {
+  @ApiProperty()
+  readonly warehouse_id: string;
+}

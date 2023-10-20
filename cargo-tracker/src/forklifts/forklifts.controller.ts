@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ForkliftsService } from './forklifts.service';
 import { CreateForkliftDto } from './dto/create-forklift.dto';
 import { UpdateForkliftDto } from './dto/update-forklift.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('forklifts')
 @Controller('forklifts')
 export class ForkliftsController {
   constructor(private readonly forkliftsService: ForkliftsService) {}
@@ -19,16 +21,11 @@ export class ForkliftsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.forkliftsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateForkliftDto: UpdateForkliftDto) {
-    return this.forkliftsService.update(+id, updateForkliftDto);
+    return this.forkliftsService.findOne(id);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.forkliftsService.remove(+id);
+    return this.forkliftsService.remove(id);
   }
 }

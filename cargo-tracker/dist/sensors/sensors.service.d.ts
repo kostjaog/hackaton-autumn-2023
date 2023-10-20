@@ -1,9 +1,11 @@
 import { CreateSensorDto } from './dto/create-sensor.dto';
-import { UpdateSensorDto } from './dto/update-sensor.dto';
+import { sensor } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 export declare class SensorsService {
-    create(createSensorDto: CreateSensorDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateSensorDto: UpdateSensorDto): string;
-    remove(id: number): string;
+    private readonly prismaService;
+    constructor(prismaService: PrismaService);
+    create(createSensorDto: CreateSensorDto): Promise<sensor>;
+    findAll(): Promise<sensor[]>;
+    findOne(id: string): Promise<sensor>;
+    remove(id: string): Promise<sensor>;
 }

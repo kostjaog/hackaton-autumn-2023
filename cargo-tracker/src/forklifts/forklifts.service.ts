@@ -1,26 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateForkliftDto } from './dto/create-forklift.dto';
 import { UpdateForkliftDto } from './dto/update-forklift.dto';
+import { forklift } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ForkliftsService {
-  create(createForkliftDto: CreateForkliftDto) {
-    return 'This action adds a new forklift';
+  constructor(private readonly prismaService: PrismaService) {}
+  create(createForkliftDto: CreateForkliftDto): Promise<forklift> {
+    try {
+      return this.prismaService.forklift.create({ data: createForkliftDto });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  findAll() {
-    return `This action returns all forklifts`;
+  findAll(): Promise<forklift[]> {
+    try {
+      return this.prismaService.forklift.findMany();
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} forklift`;
+  async findOne(id: string): Promise<forklift> {
+    try {
+      const candidate = await this.prismaService.forklift.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!candidate) {
+        throw new HttpException(
+          'Forklift with provided id does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return candidate;
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  update(id: number, updateForkliftDto: UpdateForkliftDto) {
-    return `This action updates a #${id} forklift`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} forklift`;
+  async remove(id: string): Promise<forklift> {
+    try {
+      const candidate = await this.prismaService.forklift.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!candidate) {
+        throw new HttpException(
+          'Forklift with provided id does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return this.prismaService.forklift.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 }

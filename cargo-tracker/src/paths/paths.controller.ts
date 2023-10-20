@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { PathsService } from './paths.service';
 import { CreatePathDto } from './dto/create-path.dto';
-import { UpdatePathDto } from './dto/update-path.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('paths')
 @Controller('paths')
 export class PathsController {
   constructor(private readonly pathsService: PathsService) {}
@@ -19,16 +20,11 @@ export class PathsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.pathsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePathDto: UpdatePathDto) {
-    return this.pathsService.update(+id, updatePathDto);
+    return this.pathsService.findOne(id);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.pathsService.remove(+id);
+    return this.pathsService.remove(id);
   }
 }

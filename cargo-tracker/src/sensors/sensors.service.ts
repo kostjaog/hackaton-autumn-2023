@@ -1,26 +1,76 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSensorDto } from './dto/create-sensor.dto';
 import { UpdateSensorDto } from './dto/update-sensor.dto';
+import { sensor } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class SensorsService {
-  create(createSensorDto: CreateSensorDto) {
-    return 'This action adds a new sensor';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  create(createSensorDto: CreateSensorDto): Promise<sensor> {
+    try {
+      return this.prismaService.sensor.create({
+        data: createSensorDto,
+      });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  findAll() {
-    return `This action returns all sensors`;
+  findAll(): Promise<sensor[]> {
+    try {
+      return this.prismaService.sensor.findMany();
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sensor`;
+  async findOne(id: string): Promise<sensor> {
+    try {
+      const candidate = await this.prismaService.sensor.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!candidate) {
+        throw new HttpException(
+          'Sensor with provided id does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return candidate;
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 
-  update(id: number, updateSensorDto: UpdateSensorDto) {
-    return `This action updates a #${id} sensor`;
-  }
+  async remove(id: string): Promise<sensor> {
+    try {
+      const candidate = await this.prismaService.sensor.findUnique({
+        where: {
+          id,
+        },
+      });
 
-  remove(id: number) {
-    return `This action removes a #${id} sensor`;
+      if (!candidate) {
+        throw new HttpException(
+          'Sensor with provided id does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return this.prismaService.sensor.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
   }
 }

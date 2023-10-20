@@ -1,1 +1,1 @@
-{"version":3,"file":"create-forklift-step.dto.js","sourceRoot":"","sources":["../../../src/forklift-steps/dto/create-forklift-step.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,qBAAqB;CAAG;AAArC,sDAAqC"}
+{"version":3,"file":"create-forklift-step.dto.js","sourceRoot":"","sources":["../../../src/forklift-steps/dto/create-forklift-step.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,6CAA8C;AAE9C,MAAa,qBAAqB;CAOjC;AANC;IAAC,IAAA,qBAAW,GAAE;;yDACc;AAC5B;IAAC,IAAA,qBAAW,GAAE;8BACC,IAAI;mDAAC;AACpB;IAAC,IAAA,qBAAW,GAAE;;uDACY;AAN5B,sDAOC"}

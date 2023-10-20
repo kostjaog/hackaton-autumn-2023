@@ -10,12 +10,15 @@ exports.CheckPointsModule = void 0;
 const common_1 = require("@nestjs/common");
 const check_points_service_1 = require("./check-points.service");
 const check_points_controller_1 = require("./check-points.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let CheckPointsModule = class CheckPointsModule {
 };
 CheckPointsModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         controllers: [check_points_controller_1.CheckPointsController],
-        providers: [check_points_service_1.CheckPointsService]
+        providers: [check_points_service_1.CheckPointsService],
+        exports: [check_points_service_1.CheckPointsService],
     })
 ], CheckPointsModule);
 exports.CheckPointsModule = CheckPointsModule;
