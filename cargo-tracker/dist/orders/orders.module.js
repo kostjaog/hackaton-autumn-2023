@@ -11,11 +11,17 @@ const common_1 = require("@nestjs/common");
 const orders_service_1 = require("./orders.service");
 const orders_controller_1 = require("./orders.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
+const nestjs_rabbitmq_1 = require("@golevelup/nestjs-rabbitmq");
 let OrdersModule = class OrdersModule {
 };
 OrdersModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [
+            prisma_module_1.PrismaModule,
+            nestjs_rabbitmq_1.RabbitMQModule.forRoot(nestjs_rabbitmq_1.RabbitMQModule, {
+                uri: 'amqp://rmuser:rmpassword@81.31.244.133:5672',
+            }),
+        ],
         controllers: [orders_controller_1.OrdersController],
         providers: [orders_service_1.OrdersService],
         exports: [orders_service_1.OrdersService],

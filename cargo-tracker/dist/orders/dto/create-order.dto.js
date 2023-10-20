@@ -20,6 +20,10 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
-], CreateOrderDto.prototype, "forklift_id", void 0);
+], CreateOrderDto.prototype, "forklift_name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreateOrderDto.prototype, "warehouse_id", void 0);
 exports.CreateOrderDto = CreateOrderDto;
 //# sourceMappingURL=create-order.dto.js.map

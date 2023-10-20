@@ -8,7 +8,8 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_id: string;
+        forklift_name: string;
+        warehouse_id: string;
         path_id: string;
     }>;
     findAll(): Promise<{
@@ -16,7 +17,8 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_id: string;
+        forklift_name: string;
+        warehouse_id: string;
         path_id: string;
     }[]>;
     findOne(id: string): Promise<{
@@ -24,7 +26,8 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_id: string;
+        forklift_name: string;
+        warehouse_id: string;
         path_id: string;
     }>;
     remove(id: string): Promise<{
@@ -32,7 +35,8 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_id: string;
+        forklift_name: string;
+        warehouse_id: string;
         path_id: string;
     }>;
 }

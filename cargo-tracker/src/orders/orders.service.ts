@@ -1,8 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
-import { order } from '@prisma/client';
+import { ConsumeMessage } from 'amqplib';
+
+import { forklift_status, order, order_status } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  MessageHandlerErrorBehavior,
+  Nack,
+  RabbitSubscribe,
+} from '@golevelup/nestjs-rabbitmq';
+import { rmq_order_dto } from './dto/rmq-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -71,6 +78,270 @@ export class OrdersService {
     } catch (err) {
       console.error(err.message);
       throw err;
+    }
+  }
+
+  @RabbitSubscribe({
+    queue: 'forklifts',
+    exchange: 'integration',
+    allowNonJsonMessages: true,
+    createQueueIfNotExists: false,
+    errorBehavior: MessageHandlerErrorBehavior.NACK,
+  })
+  async loadOrderDataFromRMQ(msg: rmq_order_dto, amqpMsg: ConsumeMessage) {
+    try {
+      if (amqpMsg.fields.routingKey === 'start_task') {
+        console.log('Starting task...');
+        const warehouse = await this.prismaService.warehouse.findUnique({
+          where: {
+            name: msg.warehouse_name,
+          },
+        });
+        if (!warehouse) {
+          throw new Error('Warehouse with provided id does not exist');
+        }
+        const forklift = await this.prismaService.forklift.findUnique({
+          where: {
+            name_warehouse_id: {
+              name: msg.warehouse_name,
+              warehouse_id: warehouse.id,
+            },
+          },
+        });
+        if (!forklift) {
+          throw new Error('Forklift with provided id does not exist');
+        }
+        const path = await this.prismaService.path.findUnique({
+          where: {
+            target_name: msg.target_point,
+          },
+        });
+        if (!path) {
+          throw new Error('Path with provided id does not exist');
+        }
+        const order = await this.prismaService.order.create({
+          data: {
+            warehouse_id: warehouse.id,
+            forklift_name: forklift.name,
+            path_id: path.id,
+          },
+        });
+        await this.prismaService.forklift.update({
+          where: {
+            id: forklift.id,
+          },
+          data: {
+            status: forklift_status.PROCESSING_ORDER,
+          },
+        });
+      } else if (amqpMsg.fields.routingKey === 'reach_point') {
+        console.log(
+          `Forklift ${msg.forklift_name} reached point ${msg.point_name}...`,
+        );
+        const warehouse = await this.prismaService.warehouse.findUnique({
+          where: {
+            name: msg.warehouse_name,
+          },
+        });
+        if (!warehouse) {
+          if (!warehouse) {
+            throw new Error('Warehouse with provided id does not exist');
+          }
+        }
+        const order = await this.prismaService.order.findMany({
+          where: {
+            forklift_name: msg.forklift_name,
+            warehouse_id: warehouse.id,
+            status: {
+              not: order_status.DONE,
+            },
+          },
+        });
+        if (order) {
+          if (msg.point_name === 'K1') {
+            await this.prismaService.order.update({
+              where: {
+                id: order[0].id,
+              },
+              data: {
+                status: order_status.PROCESSING,
+              },
+            });
+          }
+          const newStep = await this.prismaService.forklift_step.create({
+            data: {
+              point_name: msg.point_name,
+              time: msg.timestamp,
+              order: {
+                connect: {
+                  id: order[0].id,
+                },
+              },
+            },
+          });
+          await this.prismaService.order.update({
+            where: {
+              id: order[0].id,
+            },
+            data: {
+              check_points_time: {
+                connect: {
+                  id: newStep.id,
+                },
+              },
+            },
+          });
+        }
+      } else if (amqpMsg.fields.routingKey === 'reach_target') {
+        console.log(
+          `Forklift ${msg.forklift_name} reached target ${msg.point_name}...`,
+        );
+        const warehouse = await this.prismaService.warehouse.findUnique({
+          where: {
+            name: msg.warehouse_name,
+          },
+        });
+        if (!warehouse) {
+          if (!warehouse) {
+            throw new Error('Warehouse with provided id does not exist');
+          }
+        }
+        const order = await this.prismaService.order.findMany({
+          where: {
+            forklift_name: msg.forklift_name,
+            warehouse_id: warehouse.id,
+            status: {
+              not: order_status.DONE,
+            },
+          },
+        });
+        if (order) {
+          const newStep = await this.prismaService.forklift_step.create({
+            data: {
+              point_name: msg.point_name,
+              time: msg.timestamp,
+              order: {
+                connect: {
+                  id: order[0].id,
+                },
+              },
+            },
+          });
+          await this.prismaService.order.update({
+            where: {
+              id: order[0].id,
+            },
+            data: {
+              check_points_time: {
+                connect: {
+                  id: newStep.id,
+                },
+              },
+            },
+          });
+        }
+
+        const forklift = await this.prismaService.forklift.findUnique({
+          where: {
+            name_warehouse_id: {
+              name: order[0].forklift_name,
+              warehouse_id: warehouse.id,
+            },
+          },
+        });
+        if (!forklift) {
+          if (!forklift) {
+            throw new Error('Forklift with provided id does not exist');
+          }
+        }
+        await this.prismaService.forklift.update({
+          where: {
+            id: forklift.id,
+          },
+          data: {
+            status: forklift_status.ENDING_ORDER,
+          },
+        });
+      } else if (amqpMsg.fields.routingKey === 'finish_task') {
+        console.log(`Forklift ${msg.forklift_name} finished task...`);
+        const warehouse = await this.prismaService.warehouse.findUnique({
+          where: {
+            name: msg.warehouse_name,
+          },
+        });
+        if (!warehouse) {
+          if (!warehouse) {
+            throw new Error('Warehouse with provided id does not exist');
+          }
+        }
+        const order = await this.prismaService.order.findMany({
+          where: {
+            forklift_name: msg.forklift_name,
+            warehouse_id: warehouse.id,
+            status: {
+              not: order_status.DONE,
+            },
+          },
+        });
+        if (order) {
+          const newStep = await this.prismaService.forklift_step.create({
+            data: {
+              point_name: msg.point_name,
+              time: msg.timestamp,
+              order: {
+                connect: {
+                  id: order[0].id,
+                },
+              },
+            },
+          });
+          await this.prismaService.order.update({
+            where: {
+              id: order[0].id,
+            },
+            data: {
+              check_points_time: {
+                connect: {
+                  id: newStep.id,
+                },
+              },
+            },
+          });
+        }
+
+        const forklift = await this.prismaService.forklift.findUnique({
+          where: {
+            name_warehouse_id: {
+              name: order[0].forklift_name,
+              warehouse_id: warehouse.id,
+            },
+          },
+        });
+        if (!forklift) {
+          if (!forklift) {
+            throw new Error('Forklift with provided id does not exist');
+          }
+        }
+        await this.prismaService.order.update({
+          where: {
+            id: order[0].id,
+          },
+          data: {
+            status: order_status.DONE,
+          },
+        });
+        await this.prismaService.forklift.update({
+          where: {
+            id: forklift.id,
+          },
+          data: {
+            status: forklift_status.WAITING_ORDER,
+          },
+        });
+      }
+    } catch (err) {
+      console.error(err.message);
+      return new Nack(false);
     }
   }
 }

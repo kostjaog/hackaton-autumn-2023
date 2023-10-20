@@ -17,5 +17,9 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateForkliftDto.prototype, "warehouse_id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreateForkliftDto.prototype, "name", void 0);
 exports.CreateForkliftDto = CreateForkliftDto;
 //# sourceMappingURL=create-forklift.dto.js.map

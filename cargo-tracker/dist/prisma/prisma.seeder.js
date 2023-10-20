@@ -5,7 +5,9 @@ const data = require("./seeder.data.json");
 const seed = async () => {
     const prisma = new client_1.PrismaClient();
     const warehouse = await prisma.warehouse.create({
-        data: {},
+        data: {
+            name: '#1',
+        },
     });
     const sensorNames = [];
     Promise.all(data.map(async (data) => {

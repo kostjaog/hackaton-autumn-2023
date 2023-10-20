@@ -5,7 +5,9 @@ import * as data from './seeder.data.json';
 const seed = async () => {
   const prisma = new PrismaClient();
   const warehouse = await prisma.warehouse.create({
-    data: {},
+    data: {
+      name: '#1',
+    },
   });
   
   //@ts-ignore

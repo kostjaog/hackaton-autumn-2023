@@ -21,5 +21,9 @@ __decorate([
     (0, swagger_1.ApiPropertyOptional)(),
     __metadata("design:type", String)
 ], CreateWarehouseDto.prototype, "coordY", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreateWarehouseDto.prototype, "name", void 0);
 exports.CreateWarehouseDto = CreateWarehouseDto;
 //# sourceMappingURL=create-warehouse.dto.js.map

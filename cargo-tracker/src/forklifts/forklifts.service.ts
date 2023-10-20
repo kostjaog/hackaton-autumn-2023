@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateForkliftDto } from './dto/create-forklift.dto';
 import { UpdateForkliftDto } from './dto/update-forklift.dto';
-import { forklift } from '@prisma/client';
+import { forklift, order_status } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -30,6 +30,17 @@ export class ForkliftsService {
       const candidate = await this.prismaService.forklift.findUnique({
         where: {
           id,
+        },
+        include: {
+          orders: {
+            where: {
+              status: order_status.PROCESSING || order_status.CREATED,
+            },
+            include: {
+              path: true,
+              check_points_time: true,
+            },
+          },
         },
       });
       if (!candidate) {

@@ -8,6 +8,7 @@ export declare class WarehousesService {
     findAll(): Promise<warehouse[]>;
     findOne(id: string): import(".prisma/client").Prisma.Prisma__warehouseClient<{
         id: string;
+        name: string;
         coordX: string | null;
         coordY: string | null;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs>;

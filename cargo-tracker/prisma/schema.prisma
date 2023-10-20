@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum loader_status {
+enum forklift_status {
   WAITING_ORDER
   PROCESSING_ORDER
   ENDING_ORDER
@@ -21,6 +21,8 @@ enum order_status {
 
 model warehouse {
   id  String  @default(uuid())  @id
+
+  name  String  @unique
 
   coordX  String?
   coordY  String?
@@ -36,8 +38,9 @@ model order {
   created_at  DateTime  @default(now())
   ended_at    DateTime?
 
-  forklift_id String
-  forklift  forklift @relation(fields: [forklift_id], references: [id])
+  forklift_name String
+  warehouse_id  String
+  forklift  forklift @relation(fields: [forklift_name, warehouse_id], references: [name, warehouse_id])
 
   path_id String
   path  path  @relation(fields: [path_id], references: [id])
@@ -55,20 +58,23 @@ model forklift_step {
 }
 
 model forklift {
-  id  String  @default(uuid()) @id
+  id  String  @unique @default(uuid())
+  name  String
   warehouse_id  String
   warehouse warehouse @relation(fields: [warehouse_id], references: [id])
-  status  loader_status @default(WAITING_ORDER)
+  status  forklift_status @default(WAITING_ORDER)
   orders  order[]
   last_tm_date  DateTime?
   next_tm_date  DateTime?
 
   average_speed Int?
+
+  @@id([name, warehouse_id])
 }
 
 model path {
   id  String  @default(uuid()) @id
-  target_name String
+  target_name String  @unique
   check_points  check_point[]
 
   orders  order[]

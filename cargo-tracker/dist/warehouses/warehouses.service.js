@@ -22,6 +22,7 @@ let WarehousesService = class WarehousesService {
                 data: {
                     coordX: createWarehouseDto.coordX,
                     coordY: createWarehouseDto.coordY,
+                    name: createWarehouseDto.name,
                 },
             });
         }
