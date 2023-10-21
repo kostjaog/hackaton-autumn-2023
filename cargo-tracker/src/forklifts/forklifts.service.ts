@@ -10,7 +10,16 @@ export class ForkliftsService {
   constructor(private readonly prismaService: PrismaService) {}
   create(createForkliftDto: CreateForkliftDto): Promise<forklift> {
     try {
-      return this.prismaService.forklift.create({ data: createForkliftDto });
+      return this.prismaService.forklift.create({
+        data: {
+          name: createForkliftDto.name,
+          warehouse: {
+            connect: {
+              name: createForkliftDto.warehouse_name,
+            },
+          },
+        },
+      });
     } catch (err) {
       console.error(err.message);
       throw err;
