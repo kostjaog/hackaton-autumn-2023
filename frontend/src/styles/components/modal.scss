@@ -1,0 +1,75 @@
+.modal {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  top: 0;
+
+  &-backdrop {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba($black, 0.9);
+  }
+
+  &-container {
+    position: relative;
+    min-height: 400px;
+    min-width: 400px;
+    background-color: #fff;
+    // padding: 100px;
+    z-index: 7;
+    border-radius: 20px;
+    padding: 25px;
+  }
+
+  &-close-btn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+
+    &:hover {
+      svg {
+        color: $orange;
+      }
+    }
+  }
+}
+
+.forklift-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 50px;
+  }
+
+  .row {
+    align-self: stretch;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba($orange, 0.2);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    gap: 20px;
+
+    span {
+      padding: 10px 20px;
+      border-radius: 20px;
+      background-color: $blue;
+      font-weight: 600;
+    }
+
+    .value {
+      flex: 1;
+    }
+  }
+}

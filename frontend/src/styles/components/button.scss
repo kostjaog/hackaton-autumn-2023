@@ -1,0 +1,16 @@
+button.button {
+  flex: 1;
+  background-color: $orange;
+  padding: 12px 30px;
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  align-self: stretch;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 0.6;
+  }
+}
