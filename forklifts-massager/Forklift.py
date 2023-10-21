@@ -3,6 +3,7 @@ from random import randint, uniform
 from config import path_lib,rabbit
 from Task import TaskQueue
 import pika
+import json
 
 
 class Path:
@@ -65,13 +66,13 @@ class Forklift:
                 f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
                 f"have started the task #{self.task.id} "
                 f"at {datetime.now()}")
-            
+            self.current_path = Path(self.task.path_id)  # get Path object
             chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
-            chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have started the task #{self.task.id} "+f"at {datetime.now()}")
+            chanal.basic_publish(exchange=rabbit['exchange'],routing_key="start_task",body=json.dumps({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)}))#f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have started the task #{self.task.id} "+f"at {datetime.now()}")
             chanal.close()
 
             self.task.start()  # change task status, maybe needed later. Or not =)
-            self.current_path = Path(self.task.path_id)  # get Path object
+            
             self.current_point = self.current_path.get_next_checkpoint()  # and first point
             print(
                 f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
@@ -80,7 +81,8 @@ class Forklift:
             
             chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
             
-            chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body = f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the point {self.current_point['check_point_name']} "+f"at {datetime.now()}")
+            
+            chanal.basic_publish(exchange=rabbit['exchange'],routing_key="reach_point",body =json.dumps({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"point_name": str(self.current_point['check_point_name']),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)}) )#f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the point {self.current_point['check_point_name']} "+f"at {datetime.now()}")
             chanal.close()
 
             self.next_point = self.current_path.get_next_checkpoint()  # get next point to know were to go
@@ -115,7 +117,7 @@ class Forklift:
                         
                         chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
             
-                        chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+ f"have reach the point {self.next_point['check_point_name']} "+f"at {datetime.now()}")
+                        chanal.basic_publish(exchange=rabbit['exchange'],routing_key="reach_point",body=json.dumps({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"point_name": str(self.next_point['check_point_name']),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)}))#f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+ f"have reach the point {self.next_point['check_point_name']} "+f"at {datetime.now()}")
                         chanal.close()
                         # reassign next point to current
                         self.current_point = self.next_point
@@ -134,8 +136,9 @@ class Forklift:
                                     f"at {datetime.now()}")
                                 
                                 chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
-            
-                                chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the target {self.current_path.target_rack_id} "+f"at {datetime.now()}")
+                                
+                                # json.dump({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"point_name": str(self.current_point['check_point_name']),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)})
+                                chanal.basic_publish(exchange=rabbit['exchange'],routing_key='reach_target',body=json.dumps({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"point_name": str(self.current_point['check_point_name']),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)}))#f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the target {self.current_path.target_rack_id} "+f"at {datetime.now()}")
                                 chanal.close()
                                 
                                 # set time of solving the task (load or unload target rack)
@@ -157,8 +160,9 @@ class Forklift:
                             f"at {datetime.now()}")
                         
                         chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
-            
-                        chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have finished the task #{self.task.id} "+f"at {datetime.now()}")
+                        
+                        # json.dump({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"point_name": str(self.current_point['check_point_name']),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)})
+                        chanal.basic_publish(exchange=rabbit['exchange'],routing_key='finish_task',body=json.dumps({"warehouse_name": "#"+str(self.warehouse_id),"forklift_name": "#"+str(self.id),"point_name": str(self.current_point['check_point_name']),"timestamp": str(datetime.now().isoformat()),"target_point": str(self.current_path.target_rack_id)}))#f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have finished the task #{self.task.id} "+f"at {datetime.now()}")
                         chanal.close()
                         
                         # set task to finished state
