@@ -39,4 +39,5 @@ export declare class ForkliftsController {
         next_tm_date: Date | null;
         average_speed: number | null;
     }>;
+    getStatistics(id: string, start_date: Date, end_date: Date): Promise<import("./dto/statistics.dto").forklift_statistics_dto>;
 }

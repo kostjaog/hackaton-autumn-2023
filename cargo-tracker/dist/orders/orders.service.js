@@ -131,9 +131,7 @@ let OrdersService = class OrdersService {
                     },
                 });
                 if (!warehouse) {
-                    if (!warehouse) {
-                        throw new Error('Warehouse with provided id does not exist');
-                    }
+                    throw new Error('Warehouse with provided id does not exist');
                 }
                 const order = await this.prismaService.order.findMany({
                     where: {
@@ -144,7 +142,10 @@ let OrdersService = class OrdersService {
                         },
                     },
                 });
-                if (order) {
+                if (order.length === 0) {
+                    throw new Error('No order');
+                }
+                if (order[0]) {
                     if (msg.point_name === 'K1') {
                         await this.prismaService.order.update({
                             where: {

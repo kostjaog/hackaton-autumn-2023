@@ -28,4 +28,13 @@ export class ForkliftsController {
   remove(@Param('id') id: string) {
     return this.forkliftsService.remove(id);
   }
+
+  @Get('/statistics/:id/:start_date/:end_date')
+  getStatistics(
+    @Param('id') id: string,
+    @Param('start_date') start_date: Date,
+    @Param('end_date') end_date: Date,
+  ) {
+    return this.forkliftsService.getStatistics(id, start_date, end_date);
+  }
 }

@@ -33,6 +33,9 @@ let ForkliftsController = class ForkliftsController {
     remove(id) {
         return this.forkliftsService.remove(id);
     }
+    getStatistics(id, start_date, end_date) {
+        return this.forkliftsService.getStatistics(id, start_date, end_date);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -61,6 +64,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ForkliftsController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)('/statistics/:id/:start_date/:end_date'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('start_date')),
+    __param(2, (0, common_1.Param)('end_date')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Date,
+        Date]),
+    __metadata("design:returntype", void 0)
+], ForkliftsController.prototype, "getStatistics", null);
 ForkliftsController = __decorate([
     (0, swagger_1.ApiTags)('forklifts'),
     (0, common_1.Controller)('forklifts'),
