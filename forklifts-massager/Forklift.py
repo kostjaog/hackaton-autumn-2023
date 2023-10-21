@@ -4,6 +4,7 @@ from config import path_lib,rabbit
 from Task import TaskQueue
 import pika
 
+
 class Path:
     """
     Path class.
@@ -36,6 +37,7 @@ class Forklift:
     Forklift class.
     Represents one specific forklift on warehouse
     """
+     
 
     def __init__(self, forklift_id: int, warehouse_id: int, task_queue: TaskQueue):
         self.id = forklift_id  # unique id of forklift
@@ -51,35 +53,36 @@ class Forklift:
         self.next_point = None
         self.next_point_time = None
         self.speed = uniform(0.9, 1.1)  # random speed in m/s
+        # self.credentials = pika.PlainCredentials('rmuser', 'rmpassword')
+        # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = self.credentials))
+        # self.channel = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
 
     def get_task(self):
         # method to get new task, if forklift is free and chilling
         self.task = self.task_queue.get_task()
-        credentials = pika.PlainCredentials('rmuser', 'rmpassword')
-        connection1 = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = credentials))
-        channel1 = connection1.channel()
-        channel1.queue_declare(queue=rabbit['queue'],durable=True)
         if self.task:
-            channel1.basic_publish(exchange=rabbit['exchange'],
-                      routing_key=rabbit['routing_key'],
-                      body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have started the task #{self.task.id} "+f"at {datetime.now()}")
             print(
                 f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
                 f"have started the task #{self.task.id} "
                 f"at {datetime.now()}")
             
+            chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
+            chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have started the task #{self.task.id} "+f"at {datetime.now()}")
+            chanal.close()
+
             self.task.start()  # change task status, maybe needed later. Or not =)
             self.current_path = Path(self.task.path_id)  # get Path object
             self.current_point = self.current_path.get_next_checkpoint()  # and first point
-
-            channel1.basic_publish(exchange=rabbit['exchange'],
-                      routing_key=rabbit['routing_key'],
-                      body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the point {self.current_point['check_point_name']} "+f"at {datetime.now()}")
             print(
                 f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
                 f"have reach the point {self.current_point['check_point_name']} "
                 f"at {datetime.now()}")
             
+            chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
+            
+            chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body = f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the point {self.current_point['check_point_name']} "+f"at {datetime.now()}")
+            chanal.close()
+
             self.next_point = self.current_path.get_next_checkpoint()  # get next point to know were to go
             self.next_point_time = datetime.now() + timedelta(
                 seconds=self.current_point['next_check_point_distance'] / self.speed)  # calculate time to next point
@@ -90,16 +93,11 @@ class Forklift:
             # there can be message that there is no tasks in queue, but it's annoying
             # print(f"TaskQueue of warehouse #{self.warehouse_id} is empty "
             #       f"Forklift #{self.id} stay chill")
-        # if self.task.id == 42:
-        #     print(f"Forklift #{self.id} say: 'Hmm.. seems like I found the answer to life the universe and everything'")
+        if self.task.id == 42:
+            print(f"Forklift #{self.id} say: 'Hmm.. seems like I found the answer to life the universe and everything'")
 
     def work(self):
         # first of all check status
-        self.task = self.task_queue.get_task()
-        credentials = pika.PlainCredentials('rmuser', 'rmpassword')
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = credentials))
-        channel = connection.channel()
-        channel.queue_declare(queue=rabbit['queue'],durable=True)
         if self.status == 'chill':
             # if forklift chilling we need to make it work. We need, really?
             self.get_task()
@@ -110,16 +108,15 @@ class Forklift:
                 if datetime.now() > self.next_point_time:
                     # if forklift have next point - then let it go
                     if self.next_point:
-                        channel.basic_publish(exchange=rabbit['exchange'],
-                        routing_key=rabbit['routing_key'],
-                        body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+
-                            f"have reach the point {self.next_point['check_point_name']} "+
-                            f"at {datetime.now()}")
-
                         print(
                             f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
                             f"have reach the point {self.next_point['check_point_name']} "
                             f"at {datetime.now()}")
+                        
+                        chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
+            
+                        chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+ f"have reach the point {self.next_point['check_point_name']} "+f"at {datetime.now()}")
+                        chanal.close()
                         # reassign next point to current
                         self.current_point = self.next_point
                         # and try to get next point
@@ -131,15 +128,16 @@ class Forklift:
                         except StopIteration:
                             # if there is no more points and forklift go forward - it reach the target
                             if self.path_direction == "forward":
-                                channel.basic_publish(exchange=rabbit['exchange'],
-                                routing_key=rabbit['routing_key'],
-                                body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+
-                                    f"have reach the target {self.current_path.target_rack_id} "+
-                                    f"at {datetime.now()}")
                                 print(
                                     f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
                                     f"have reach the target {self.current_path.target_rack_id} "
                                     f"at {datetime.now()}")
+                                
+                                chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
+            
+                                chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have reach the target {self.current_path.target_rack_id} "+f"at {datetime.now()}")
+                                chanal.close()
+                                
                                 # set time of solving the task (load or unload target rack)
                                 self.next_point_time = datetime.now() + timedelta(seconds=self.task.execution_time)
                                 # and get next point (now Path iterator set to backward mode)
@@ -153,15 +151,16 @@ class Forklift:
                                 self.next_point = None
                     # if we reach this else condition then forklift finish the task
                     else:
-                        channel.basic_publish(exchange=rabbit['exchange'],
-                                routing_key=rabbit['routing_key'],
-                                body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+
-                                f"have finished the task #{self.task.id} "+
-                                f"at {datetime.now()}")
                         print(
                             f"Forklift #{self.id} of warehouse #{self.warehouse_id} "
                             f"have finished the task #{self.task.id} "
                             f"at {datetime.now()}")
+                        
+                        chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
+            
+                        chanal.basic_publish(exchange=rabbit['exchange'],routing_key=rabbit['routing_key'],body=f"Forklift #{self.id} of warehouse #{self.warehouse_id} "+f"have finished the task #{self.task.id} "+f"at {datetime.now()}")
+                        chanal.close()
+                        
                         # set task to finished state
                         self.task.finish()
                         # set forklift to chilling status. Next time we will give him a task

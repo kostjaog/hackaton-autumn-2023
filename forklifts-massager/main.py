@@ -30,3 +30,7 @@ if __name__ == '__main__':
     # The reason why we don't use standard multiprocessing lib is because it does not support classes pickling
     pool = ProcessPool(nodes=int(multiprocessing.cpu_count() * 0.2))  # we use 80% of cores
     pool.map(run_warehouse, warehouses)
+
+
+    # wh = Warehouse(warehouse_id=0, city=cities[randint(0, len(cities) - 1)])
+    # run_warehouse(wh)

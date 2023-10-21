@@ -1,7 +1,9 @@
 from Task import TaskQueue
 from random import randint
 from Forklift import Forklift
+from config import rabbit
 import time
+
 
 
 
@@ -16,6 +18,7 @@ class Warehouse:
             warehouse_id: int,
             city: str
     ):
+        # self.chanal = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()
         self.id = warehouse_id
         self.city = city
         self.task_queue = TaskQueue(self.id)  # queue for all task of this warehouse instance
@@ -45,7 +48,7 @@ class Warehouse:
 
     def work(self):
         #ПОЖАЛУЙСТА НЕ ТАК БЫСТРО !!!!
-        time.sleep(randint(4,10))
+        # time.sleep(randint(4,10))
         # infinite loop with warehouse works
         while True:
             # iterate over forklifts and make them work =)
