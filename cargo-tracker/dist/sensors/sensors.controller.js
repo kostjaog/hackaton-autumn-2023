@@ -27,6 +27,9 @@ let SensorsController = class SensorsController {
     findAll() {
         return this.sensorsService.findAll();
     }
+    getStatistics(name, warehouse_id) {
+        return this.sensorsService.getStatistics(name, warehouse_id);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -41,6 +44,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], SensorsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('statistics/:name/:warehouse_id'),
+    __param(0, (0, common_1.Param)('name')),
+    __param(1, (0, common_1.Param)('warehouse_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], SensorsController.prototype, "getStatistics", null);
 SensorsController = __decorate([
     (0, swagger_1.ApiTags)('sensors'),
     (0, common_1.Controller)('sensors'),

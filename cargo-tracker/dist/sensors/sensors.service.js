@@ -70,10 +70,25 @@ let SensorsService = class SensorsService {
                 forklift_steps_count: [],
             };
             candidate === null || candidate === void 0 ? void 0 : candidate.warehouse.loaders.map((loader) => {
+                const forkStat = statistics.forklift_steps_count.filter((fork) => fork.forklift_name === loader.name);
+                if (forkStat.length === 0) {
+                    statistics.forklift_steps_count.push({
+                        forklift_name: loader.name,
+                        step_through_count: 0,
+                    });
+                }
                 loader.orders.map((order) => {
+                    order.check_points_time.map((checkPoint) => {
+                        statistics.forklift_steps_count.map((forkStep) => {
+                            if (name === checkPoint.point_name) {
+                                forkStep.step_through_count += 1;
+                            }
+                        });
+                    });
                     statistics.step_through_count += order.check_points_time.length;
                 });
             });
+            return statistics;
         }
         catch (err) {
             console.error(err.message);

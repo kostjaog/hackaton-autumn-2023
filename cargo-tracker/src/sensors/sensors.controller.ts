@@ -18,6 +18,14 @@ export class SensorsController {
     return this.sensorsService.findAll();
   }
 
+  @Get('statistics/:name/:warehouse_id')
+  getStatistics(
+    @Param('name') name: string,
+    @Param('warehouse_id') warehouse_id: string,
+  ) {
+    return this.sensorsService.getStatistics(name, warehouse_id);
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.sensorsService.findOne(id);

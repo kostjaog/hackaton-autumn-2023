@@ -13,4 +13,5 @@ export declare class SensorsController {
         name: string;
         warehouse_id: string;
     }[]>;
+    getStatistics(name: string, warehouse_id: string): Promise<import("./dto/sensor-statistics.dto").sensor_statistics_dto>;
 }
