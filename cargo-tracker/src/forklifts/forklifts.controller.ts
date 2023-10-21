@@ -36,4 +36,12 @@ export class ForkliftsController {
   ) {
     return this.forkliftsService.getStatistics(id, start_date, end_date);
   }
+
+  @Get('/transfer/:forklift_id/:warehouse_id')
+  transferForklift(
+    @Param('forklift_id') forklift_id: string,
+    @Param('warehouse_id') warehouse_id: string,
+  ) {
+    return this.forkliftsService.warehouseTransfer(forklift_id, warehouse_id);
+  }
 }

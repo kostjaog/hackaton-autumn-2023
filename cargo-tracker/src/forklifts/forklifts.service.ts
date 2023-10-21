@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateForkliftDto } from './dto/create-forklift.dto';
-import { UpdateForkliftDto } from './dto/update-forklift.dto';
 import { forklift, order_status } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { forklift_statistics_dto } from './dto/statistics.dto';
@@ -12,6 +11,65 @@ export class ForkliftsService {
   create(createForkliftDto: CreateForkliftDto): Promise<forklift> {
     try {
       return this.prismaService.forklift.create({ data: createForkliftDto });
+    } catch (err) {
+      console.error(err.message);
+      throw err;
+    }
+  }
+
+  async warehouseTransfer(forklift_id: string, warehouse_id: string) {
+    try {
+      const forkliftCandidate = await this.prismaService.forklift.findUnique({
+        where: {
+          id: forklift_id,
+        },
+      });
+      const warehouseCandidate = await this.prismaService.warehouse.findUnique({
+        where: {
+          id: warehouse_id,
+        },
+      });
+
+      if (!forkliftCandidate || !warehouseCandidate) {
+        throw new HttpException(
+          'One of two entities with provided data does not exist',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const orders = await this.prismaService.order.findMany({
+        where: {
+          warehouse_id,
+          forklift_name: forkliftCandidate.name,
+          status: {
+            not: order_status.DONE,
+          },
+        },
+      });
+      // cleaning up unprocessed orders before transfer
+      orders.map(async (order) => {
+        await this.prismaService.order.update({
+          where: {
+            id: order.id,
+          },
+          data: {
+            status: order_status.DONE,
+          },
+        });
+      });
+
+      return this.prismaService.forklift.update({
+        where: {
+          id: forklift_id,
+        },
+        data: {
+          warehouse: {
+            connect: {
+              id: warehouse_id,
+            },
+          },
+        },
+      });
     } catch (err) {
       console.error(err.message);
       throw err;

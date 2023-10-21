@@ -36,6 +36,9 @@ let ForkliftsController = class ForkliftsController {
     getStatistics(id, start_date, end_date) {
         return this.forkliftsService.getStatistics(id, start_date, end_date);
     }
+    transferForklift(forklift_id, warehouse_id) {
+        return this.forkliftsService.warehouseTransfer(forklift_id, warehouse_id);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -74,6 +77,14 @@ __decorate([
         Date]),
     __metadata("design:returntype", void 0)
 ], ForkliftsController.prototype, "getStatistics", null);
+__decorate([
+    (0, common_1.Get)('/transfer/:forklift_id/:warehouse_id'),
+    __param(0, (0, common_1.Param)('forklift_id')),
+    __param(1, (0, common_1.Param)('warehouse_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ForkliftsController.prototype, "transferForklift", null);
 ForkliftsController = __decorate([
     (0, swagger_1.ApiTags)('forklifts'),
     (0, common_1.Controller)('forklifts'),

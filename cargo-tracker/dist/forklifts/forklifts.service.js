@@ -26,6 +26,58 @@ let ForkliftsService = class ForkliftsService {
             throw err;
         }
     }
+    async warehouseTransfer(forklift_id, warehouse_id) {
+        try {
+            const forkliftCandidate = await this.prismaService.forklift.findUnique({
+                where: {
+                    id: forklift_id,
+                },
+            });
+            const warehouseCandidate = await this.prismaService.warehouse.findUnique({
+                where: {
+                    id: warehouse_id,
+                },
+            });
+            if (!forkliftCandidate || !warehouseCandidate) {
+                throw new common_1.HttpException('One of two entities with provided data does not exist', common_1.HttpStatus.NOT_FOUND);
+            }
+            const orders = await this.prismaService.order.findMany({
+                where: {
+                    warehouse_id,
+                    forklift_name: forkliftCandidate.name,
+                    status: {
+                        not: client_1.order_status.DONE,
+                    },
+                },
+            });
+            orders.map(async (order) => {
+                await this.prismaService.order.update({
+                    where: {
+                        id: order.id,
+                    },
+                    data: {
+                        status: client_1.order_status.DONE,
+                    },
+                });
+            });
+            return this.prismaService.forklift.update({
+                where: {
+                    id: forklift_id,
+                },
+                data: {
+                    warehouse: {
+                        connect: {
+                            id: warehouse_id,
+                        },
+                    },
+                },
+            });
+        }
+        catch (err) {
+            console.error(err.message);
+            throw err;
+        }
+    }
     async getStatistics(id, start_date, end_date) {
         try {
             const candidate = await this.prismaService.forklift.findUnique({
