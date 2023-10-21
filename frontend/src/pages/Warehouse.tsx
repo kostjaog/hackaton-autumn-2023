@@ -46,9 +46,7 @@ const WAREHOUSE_DATA: WareHouseData[] = [
 ];
 
 const getCurrentForkliftRoute = (forklift: Forklift) => {
-  const points = forklift.orders[0].check_points_time;
-
-  console.log("POINTS", points);
+  const points = forklift.orders.slice(-1)[0].check_points_time;
 
   if (points.length === 0) {
     return POINTS_POSITIONS[0];
@@ -61,25 +59,29 @@ const getCurrentForkliftRoute = (forklift: Forklift) => {
 
 const checkOnWaiting = (forklift: Forklift) => {
   return (
-    forklift.orders[0].check_points_time.filter(
-      (point) =>
-        point.point_name ===
-        ROUTES.find((route) => route.target === forklift.orders[0].path.target_name)?.routes.slice(
-          -1
-        )[0].pointName
-    ).length === 1
+    forklift.orders
+      .slice(-1)[0]
+      .check_points_time.filter(
+        (point) =>
+          point.point_name ===
+          ROUTES.find(
+            (route) => route.target === forklift.orders.slice(-1)[0].path.target_name
+          )?.routes.slice(-1)[0].pointName
+      ).length === 1
   );
 };
 
 const checkIsBack = (forklift: Forklift) => {
   return (
-    forklift.orders[0].check_points_time.filter(
-      (point) =>
-        point.point_name ===
-        ROUTES.find((route) => route.target === forklift.orders[0].path.target_name)?.routes.slice(
-          -1
-        )[0].pointName
-    ).length === 2
+    forklift.orders
+      .slice(-1)[0]
+      .check_points_time.filter(
+        (point) =>
+          point.point_name ===
+          ROUTES.find(
+            (route) => route.target === forklift.orders.slice(-1)[0].path.target_name
+          )?.routes.slice(-1)[0].pointName
+      ).length === 2
   );
 };
 
@@ -98,11 +100,16 @@ const Warehouse = () => {
 
   React.useEffect(() => {
     const getData = () => {
+      console.log("GET DATA");
       fetch(`http://81.31.244.133/api/warehouses/${id.pathname.replace("/warehouse/", "")}`).then(
         async (res) => {
           const data = await res.json();
 
-          console.log(data);
+          console.log(
+            "NEW DATA === OLD DATA",
+            JSON.stringify(data) === JSON.stringify(forklifts?.map((item) => item.orders))
+          );
+
           setForklifts(data.loaders);
         }
       );
@@ -114,7 +121,7 @@ const Warehouse = () => {
       getData();
     }, 1000);
 
-    return clearInterval(interval.current);
+    return () => clearInterval(interval.current);
   }, []);
 
   React.useEffect(() => {
@@ -123,31 +130,30 @@ const Warehouse = () => {
         .filter((item) => item.status === "PROCESSING_ORDER" || item.status === "ENDING_ORDER")
         .map((item, index) => {
           if (item.orders.length > 0) {
-            const pointsLength = item.orders[0].check_points_time.length;
-            const targetPoint = item.orders[0].path.target_name;
+            const pointsLength = item.orders.slice(-1)[0].check_points_time.length;
+            const targetPoint = item.orders.slice(-1)[0].path.target_name;
             const currentRoute = ROUTES.find((item) => item.target === targetPoint);
             const lastPoint = getCurrentForkliftRoute(item);
 
             const currentPoint =
               pointsLength === 0
                 ? (currentRoute?.routes[0].pointName as string)
-                : item.orders[0].check_points_time?.slice(-1)?.[0].point_name;
+                : item.orders.slice(-1)[0].check_points_time?.slice(-1)?.[0].point_name;
 
             const findedIndex = currentRoute!.routes.findIndex(
               (item) => item.pointName === lastPoint?.checkPointName
             );
 
-            console.log(findedIndex);
-
             let isBack = false;
             let nextPoint = null;
-            let nextPointCoords = null;
             let isWaiting = false;
             let isFinish = false;
 
-            if (item.orders[0].check_points_time.length < currentRoute!.routes.length) {
+            if (item.orders.slice(-1)[0].check_points_time.length < currentRoute!.routes.length) {
               nextPoint = currentRoute?.routes[findedIndex + 1];
-            } else if (item.orders[0].check_points_time.length === currentRoute!.routes.length) {
+            } else if (
+              item.orders.slice(-1)[0].check_points_time.length === currentRoute!.routes.length
+            ) {
               isWaiting = true;
             } else {
               if (findedIndex === 0) {
@@ -159,7 +165,6 @@ const Warehouse = () => {
             }
 
             if (isFinish) {
-              console.log("IS FINISH");
               return;
             }
 
@@ -173,8 +178,6 @@ const Warehouse = () => {
                 (["K10", "K7", "K4"].includes(currentPoint) &&
                   ["K9", "K6", "K3"].includes(nextPoint!.pointName))
               ) {
-                console.log("COORDS", coords);
-
                 animate(
                   `.active-car-${index + 1}`,
                   {
@@ -192,7 +195,7 @@ const Warehouse = () => {
                             bottom: `${coords?.y}px`,
                           },
                           {
-                            duration: 7,
+                            duration: 13,
                           }
                         );
                       }, 200),
@@ -221,7 +224,7 @@ const Warehouse = () => {
                             bottom: `${coords?.y}px`,
                           },
                           {
-                            duration: 5.5,
+                            duration: 13,
                           }
                         );
                       }, 200),
@@ -265,7 +268,7 @@ const Warehouse = () => {
                             bottom: `${coords?.y}px`,
                           },
                           {
-                            duration: 7,
+                            duration: 15,
                           }
                         );
                       }, 200),
@@ -285,7 +288,7 @@ const Warehouse = () => {
                     bottom: `${coords?.y}px`,
                   },
                   {
-                    duration: 5.5,
+                    duration: 13,
                   }
                 );
               }

@@ -151,7 +151,8 @@ const ForkliftReport = () => {
               </div>
               <div>
                 {item.orders.some((order) => order.status === "DONE") ? (
-                  <div>123</div>
+                  // <div>{JSON.stringify(statistics)}</div>
+                  <div>{["Количество заказов", "Пройденная дистанция", ""]}</div>
                 ) : (
                   <p>Нет выполненных заказов</p>
                 )}
