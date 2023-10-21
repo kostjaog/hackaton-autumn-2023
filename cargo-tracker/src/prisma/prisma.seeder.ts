@@ -4,11 +4,11 @@ import * as data from './seeder.data.json';
 
 const seed = async () => {
   const prisma = new PrismaClient();
-  const warehouse = await prisma.warehouse.create({
-    data: {
-      name: '#1',
-    },
-  });
+  // const warehouse = await prisma.warehouse.create({
+  //   data: {
+  //     name: '#1',
+  //   },
+  // });
 
   //@ts-ignore
   const sensorNames = [];
@@ -41,24 +41,7 @@ const seed = async () => {
         });
       });
     }),
-  ).then(async () => {
-    console.log('sensor 1');
-
-    //@ts-ignore
-    sensorNames.map(async (sensor) => {
-      console.log('sensor 2');
-      await prisma.sensor.create({
-        data: {
-          name: sensor,
-          warehouse: {
-            connect: {
-              id: warehouse.id,
-            },
-          },
-        },
-      });
-    });
-  });
+  )
 };
 
 seed();

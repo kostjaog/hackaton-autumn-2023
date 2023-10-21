@@ -9,7 +9,7 @@ export class WarehousesService {
 
   create(createWarehouseDto: CreateWarehouseDto): Promise<warehouse> {
     try {
-      console.log(createWarehouseDto)
+      console.log(createWarehouseDto);
       return this.prismaService.warehouse.create({
         data: {
           coordX: createWarehouseDto.coordX,
@@ -37,6 +37,9 @@ export class WarehousesService {
       return this.prismaService.warehouse.findUnique({
         where: {
           id,
+        },
+        include: {
+          loaders: true,
         },
       });
     } catch (err) {
