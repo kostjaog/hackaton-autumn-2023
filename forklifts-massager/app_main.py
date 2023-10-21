@@ -9,7 +9,7 @@ from random import randint
 app = FastAPI()
 
 def run_warhouse(w: Warehouse):
-    w.work_by_number(6000)
+    w.work_by_number(600000)
 
 @app.post("/generate")
 def generate_activ():

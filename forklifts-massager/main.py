@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # list to store all warehouses
     warehouses = []
     # parallel all tasks by approx 80% of CPUs
-    for i in range(int(multiprocessing.cpu_count() * 0.2)):
+    for i in range(1):#int(multiprocessing.cpu_count() * 0.2)):
         # create new warehouse with random city from cities list
         warehouses.append(Warehouse(warehouse_id=i, city=cities[randint(0, len(cities) - 1)]))
     # here we use ProcessPool from pathos lib.
