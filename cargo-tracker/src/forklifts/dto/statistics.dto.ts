@@ -12,14 +12,3 @@ export interface forklift_statistics_dto {
     ending: number;
   };
 }
-
-// travel_distance: 0,
-//         orders_count: candidate.orders.length,
-//         travel_time: [],
-//         downtime: 0,
-//         time_in_status: {
-//           waiting: 0,
-//           processing: 0,
-//           enging: 0,
-//         },
-//       };

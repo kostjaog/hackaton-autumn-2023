@@ -91,7 +91,7 @@ export class OrdersService {
   async loadOrderDataFromRMQ(msg: rmq_order_dto, amqpMsg: ConsumeMessage) {
     try {
       if (amqpMsg.fields.routingKey === 'start_task') {
-        console.log('Starting task...');
+        console.log('Starting task...', msg.forklift_name);
         const warehouse = await this.prismaService.warehouse.findUnique({
           where: {
             name: msg.warehouse_name,
@@ -103,7 +103,7 @@ export class OrdersService {
         const forklift = await this.prismaService.forklift.findUnique({
           where: {
             name_warehouse_id: {
-              name: msg.warehouse_name,
+              name: msg.forklift_name,
               warehouse_id: warehouse.id,
             },
           },
@@ -134,6 +134,7 @@ export class OrdersService {
             status: forklift_status.PROCESSING_ORDER,
           },
         });
+        return;
       } else if (amqpMsg.fields.routingKey === 'reach_point') {
         console.log(
           `Forklift ${msg.forklift_name} reached point ${msg.point_name}...`,
@@ -172,7 +173,7 @@ export class OrdersService {
           const newStep = await this.prismaService.forklift_step.create({
             data: {
               point_name: msg.point_name,
-              time: msg.timestamp,
+              time: new Date(msg.timestamp),
               order: {
                 connect: {
                   id: order[0].id,
@@ -193,6 +194,7 @@ export class OrdersService {
             },
           });
         }
+        return;
       } else if (amqpMsg.fields.routingKey === 'reach_target') {
         console.log(
           `Forklift ${msg.forklift_name} reached target ${msg.point_name}...`,
@@ -220,7 +222,7 @@ export class OrdersService {
           const newStep = await this.prismaService.forklift_step.create({
             data: {
               point_name: msg.point_name,
-              time: msg.timestamp,
+              time: new Date(msg.timestamp),
               order: {
                 connect: {
                   id: order[0].id,
@@ -263,6 +265,7 @@ export class OrdersService {
             status: forklift_status.ENDING_ORDER,
           },
         });
+        return;
       } else if (amqpMsg.fields.routingKey === 'finish_task') {
         console.log(`Forklift ${msg.forklift_name} finished task...`);
         const warehouse = await this.prismaService.warehouse.findUnique({
@@ -288,7 +291,7 @@ export class OrdersService {
           const newStep = await this.prismaService.forklift_step.create({
             data: {
               point_name: msg.point_name,
-              time: msg.timestamp,
+              time: new Date(msg.timestamp),
               order: {
                 connect: {
                   id: order[0].id,
@@ -340,9 +343,10 @@ export class OrdersService {
           },
         });
       }
+      return;
     } catch (err) {
       console.error(err.message);
-      return new Nack(false);
+      // return new Nack(false);
     }
   }
 }
