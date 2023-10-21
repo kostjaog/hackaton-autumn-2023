@@ -81,7 +81,6 @@ let ForkliftsService = class ForkliftsService {
                         order_id: order.id,
                     },
                 });
-                console.log(order.path.target_name, order.id, endStep);
                 if (order.ended_at) {
                     const processingTime = order.ended_at.valueOf() - order.created_at.valueOf();
                     statistics.time_in_status.processing += processingTime;
@@ -108,7 +107,6 @@ let ForkliftsService = class ForkliftsService {
                     }
                 }
                 order.check_points_time.map((check, index) => {
-                    console.log(endStep);
                     if (check.time > endStep.time && index !== 0) {
                         statistics.time_in_status.ending +=
                             order.ended_at.valueOf() - endStep.time.valueOf();
@@ -116,14 +114,12 @@ let ForkliftsService = class ForkliftsService {
                 });
                 order.path.check_points.map((point) => {
                     statistics.travel_distance += point.next_check_point_distance;
-                    console.log(statistics.travel_distance);
                 });
             }));
             statistics.downtime +=
                 new Date().valueOf() - candidate.orders[0].ended_at.valueOf();
             statistics.time_in_status.waiting +=
                 new Date().valueOf() - candidate.orders[0].ended_at.valueOf();
-            console.log(statistics);
             return statistics;
         }
         catch (err) {

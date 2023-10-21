@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateForkliftStepDto } from './dto/create-forklift-step.dto';
-import { UpdateForkliftStepDto } from './dto/update-forklift-step.dto';
 import { forklift_step } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 

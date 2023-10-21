@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateSensorDto } from './dto/create-sensor.dto';
-import { UpdateSensorDto } from './dto/update-sensor.dto';
 import { sensor } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { sensor_statistics_dto } from './dto/sensor-statistics.dto';

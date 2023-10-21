@@ -107,7 +107,7 @@ let OrdersService = class OrdersService {
                 if (!path) {
                     throw new Error('Path with provided id does not exist');
                 }
-                const order = await this.prismaService.order.create({
+                await this.prismaService.order.create({
                     data: {
                         warehouse_id: warehouse.id,
                         forklift_name: forklift.name,

@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { path } from '@prisma/client';
 import { CreatePathDto } from './dto/create-path.dto';
-import { UpdatePathDto } from './dto/update-path.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()

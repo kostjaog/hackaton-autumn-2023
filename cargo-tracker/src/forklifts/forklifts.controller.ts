@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ForkliftsService } from './forklifts.service';
 import { CreateForkliftDto } from './dto/create-forklift.dto';
-import { UpdateForkliftDto } from './dto/update-forklift.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('forklifts')
@@ -35,7 +34,6 @@ export class ForkliftsController {
     @Param('start_date') start_date: Date,
     @Param('end_date') end_date: Date,
   ) {
-    console.log(start_date, end_date)
     return this.forkliftsService.getStatistics(id, start_date, end_date);
   }
 }

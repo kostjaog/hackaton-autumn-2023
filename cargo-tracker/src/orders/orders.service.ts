@@ -6,7 +6,6 @@ import { forklift_status, order, order_status } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   MessageHandlerErrorBehavior,
-  Nack,
   RabbitSubscribe,
 } from '@golevelup/nestjs-rabbitmq';
 import { rmq_order_dto } from './dto/rmq-order.dto';
@@ -119,7 +118,7 @@ export class OrdersService {
         if (!path) {
           throw new Error('Path with provided id does not exist');
         }
-        const order = await this.prismaService.order.create({
+        await this.prismaService.order.create({
           data: {
             warehouse_id: warehouse.id,
             forklift_name: forklift.name,
