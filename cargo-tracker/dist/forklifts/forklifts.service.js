@@ -130,9 +130,6 @@ let ForkliftsService = class ForkliftsService {
             return this.prismaService.forklift.findMany({
                 include: {
                     orders: {
-                        where: {
-                            status: client_1.order_status.PROCESSING || client_1.order_status.CREATED,
-                        },
                         include: {
                             path: true,
                             check_points_time: true,
@@ -154,9 +151,6 @@ let ForkliftsService = class ForkliftsService {
                 },
                 include: {
                     orders: {
-                        where: {
-                            status: client_1.order_status.PROCESSING || client_1.order_status.CREATED,
-                        },
                         include: {
                             path: true,
                             check_points_time: true,

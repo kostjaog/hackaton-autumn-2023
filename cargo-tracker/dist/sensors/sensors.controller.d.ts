@@ -13,14 +13,4 @@ export declare class SensorsController {
         name: string;
         warehouse_id: string;
     }[]>;
-    findOne(id: string): Promise<{
-        id: string;
-        name: string;
-        warehouse_id: string;
-    }>;
-    remove(id: string): Promise<{
-        id: string;
-        name: string;
-        warehouse_id: string;
-    }>;
 }

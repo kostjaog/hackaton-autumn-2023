@@ -6,6 +6,5 @@ export declare class SensorsService {
     constructor(prismaService: PrismaService);
     create(createSensorDto: CreateSensorDto): Promise<sensor>;
     findAll(): Promise<sensor[]>;
-    findOne(id: string): Promise<sensor>;
-    remove(id: string): Promise<sensor>;
+    getStatistics(name: string, warehouse_id: string): Promise<void>;
 }

@@ -90,9 +90,11 @@ model check_point {
 }
 
 model sensor {
-  id  String  @default(uuid()) @id
-  name  String @unique
+  id  String  @default(uuid())
+  name  String 
 
   warehouse_id  String
   warehouse warehouse @relation(fields: [warehouse_id], references: [id])
+
+  @@id([name, warehouse_id])
 }

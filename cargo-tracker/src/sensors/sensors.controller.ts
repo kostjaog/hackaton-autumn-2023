@@ -18,13 +18,13 @@ export class SensorsController {
     return this.sensorsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.sensorsService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.sensorsService.findOne(id);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.sensorsService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.sensorsService.remove(id);
+  // }
 }

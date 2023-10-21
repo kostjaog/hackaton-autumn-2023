@@ -3,6 +3,7 @@ import { CreateSensorDto } from './dto/create-sensor.dto';
 import { UpdateSensorDto } from './dto/update-sensor.dto';
 import { sensor } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { sensor_statistics_dto } from './dto/sensor-statistics.dto';
 
 @Injectable()
 export class SensorsService {
@@ -28,49 +29,94 @@ export class SensorsService {
     }
   }
 
-  async findOne(id: string): Promise<sensor> {
+  // async findOne(id: string): Promise<sensor> {
+  //   try {
+  //     const candidate = await this.prismaService.sensor.findUnique({
+  //       where: {
+  //         id,
+  //       },
+  //     });
+  //     if (!candidate) {
+  //       throw new HttpException(
+  //         'Sensor with provided id does not exist',
+  //         HttpStatus.NOT_FOUND,
+  //       );
+  //     }
+  //     return candidate;
+  //   } catch (err) {
+  //     console.error(err.message);
+  //     throw err;
+  //   }
+  // }
+
+  async getStatistics(name: string, warehouse_id: string) {
     try {
       const candidate = await this.prismaService.sensor.findUnique({
         where: {
-          id,
+          name_warehouse_id: {
+            warehouse_id,
+            name,
+          },
+        },
+        include: {
+          warehouse: {
+            include: {
+              loaders: {
+                include: {
+                  orders: {
+                    include: {
+                      check_points_time: {
+                        where: {
+                          point_name: name,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       });
-      if (!candidate) {
-        throw new HttpException(
-          'Sensor with provided id does not exist',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      return candidate;
+      const statistics: sensor_statistics_dto = {
+        step_through_count: 0,
+        forklift_steps_count: [],
+      };
+
+      candidate?.warehouse.loaders.map((loader) => {
+        loader.orders.map((order) => {
+          statistics.step_through_count += order.check_points_time.length;
+        });
+      });
     } catch (err) {
       console.error(err.message);
       throw err;
     }
   }
 
-  async remove(id: string): Promise<sensor> {
-    try {
-      const candidate = await this.prismaService.sensor.findUnique({
-        where: {
-          id,
-        },
-      });
+  // async remove(id: string): Promise<sensor> {
+  //   try {
+  //     const candidate = await this.prismaService.sensor.findUnique({
+  //       where: {
+  //         id,
+  //       },
+  //     });
 
-      if (!candidate) {
-        throw new HttpException(
-          'Sensor with provided id does not exist',
-          HttpStatus.NOT_FOUND,
-        );
-      }
+  //     if (!candidate) {
+  //       throw new HttpException(
+  //         'Sensor with provided id does not exist',
+  //         HttpStatus.NOT_FOUND,
+  //       );
+  //     }
 
-      return this.prismaService.sensor.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (err) {
-      console.error(err.message);
-      throw err;
-    }
-  }
+  //     return this.prismaService.sensor.delete({
+  //       where: {
+  //         id,
+  //       },
+  //     });
+  //   } catch (err) {
+  //     console.error(err.message);
+  //     throw err;
+  //   }
+  // }
 }

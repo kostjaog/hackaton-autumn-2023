@@ -36,37 +36,43 @@ let SensorsService = class SensorsService {
             throw err;
         }
     }
-    async findOne(id) {
+    async getStatistics(name, warehouse_id) {
         try {
             const candidate = await this.prismaService.sensor.findUnique({
                 where: {
-                    id,
+                    name_warehouse_id: {
+                        warehouse_id,
+                        name,
+                    },
+                },
+                include: {
+                    warehouse: {
+                        include: {
+                            loaders: {
+                                include: {
+                                    orders: {
+                                        include: {
+                                            check_points_time: {
+                                                where: {
+                                                    point_name: name,
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
             });
-            if (!candidate) {
-                throw new common_1.HttpException('Sensor with provided id does not exist', common_1.HttpStatus.NOT_FOUND);
-            }
-            return candidate;
-        }
-        catch (err) {
-            console.error(err.message);
-            throw err;
-        }
-    }
-    async remove(id) {
-        try {
-            const candidate = await this.prismaService.sensor.findUnique({
-                where: {
-                    id,
-                },
-            });
-            if (!candidate) {
-                throw new common_1.HttpException('Sensor with provided id does not exist', common_1.HttpStatus.NOT_FOUND);
-            }
-            return this.prismaService.sensor.delete({
-                where: {
-                    id,
-                },
+            const statistics = {
+                step_through_count: 0,
+                forklift_steps_count: [],
+            };
+            candidate === null || candidate === void 0 ? void 0 : candidate.warehouse.loaders.map((loader) => {
+                loader.orders.map((order) => {
+                    statistics.step_through_count += order.check_points_time.length;
+                });
             });
         }
         catch (err) {
