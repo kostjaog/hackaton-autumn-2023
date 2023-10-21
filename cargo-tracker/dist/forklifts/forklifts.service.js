@@ -28,7 +28,19 @@ let ForkliftsService = class ForkliftsService {
     }
     findAll() {
         try {
-            return this.prismaService.forklift.findMany();
+            return this.prismaService.forklift.findMany({
+                include: {
+                    orders: {
+                        where: {
+                            status: client_1.order_status.PROCESSING || client_1.order_status.CREATED,
+                        },
+                        include: {
+                            path: true,
+                            check_points_time: true,
+                        },
+                    },
+                },
+            });
         }
         catch (err) {
             console.error(err.message);

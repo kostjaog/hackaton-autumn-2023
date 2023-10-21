@@ -18,7 +18,19 @@ export class ForkliftsService {
 
   findAll(): Promise<forklift[]> {
     try {
-      return this.prismaService.forklift.findMany();
+      return this.prismaService.forklift.findMany({
+        include: {
+          orders: {
+            where: {
+              status: order_status.PROCESSING || order_status.CREATED,
+            },
+            include: {
+              path: true,
+              check_points_time: true,
+            },
+          },
+        },
+      });
     } catch (err) {
       console.error(err.message);
       throw err;
