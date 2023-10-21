@@ -34,6 +34,7 @@ let ForkliftsController = class ForkliftsController {
         return this.forkliftsService.remove(id);
     }
     getStatistics(id, start_date, end_date) {
+        console.log(start_date, end_date);
         return this.forkliftsService.getStatistics(id, start_date, end_date);
     }
 };

@@ -35,6 +35,7 @@ export class ForkliftsController {
     @Param('start_date') start_date: Date,
     @Param('end_date') end_date: Date,
   ) {
+    console.log(start_date, end_date)
     return this.forkliftsService.getStatistics(id, start_date, end_date);
   }
 }

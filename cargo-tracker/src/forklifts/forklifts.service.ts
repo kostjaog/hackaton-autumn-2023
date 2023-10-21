@@ -37,7 +37,11 @@ export class ForkliftsService {
               status: order_status.DONE,
             },
             include: {
-              check_points_time: true,
+              check_points_time: {
+                orderBy: {
+                  time: 'desc',
+                },
+              },
               path: {
                 include: {
                   check_points: true,
@@ -68,10 +72,11 @@ export class ForkliftsService {
         candidate.orders.map(async (order, index) => {
           const endStep = await this.prismaService.forklift_step.findFirst({
             where: {
-              point_name: order.path.target_name,
+              point_name: order.path.check_points[0].name,
               order_id: order.id,
             },
           });
+          console.log(order.path.target_name, order.id, endStep);
           if (order.ended_at) {
             const processingTime =
               order.ended_at!.valueOf() - order.created_at.valueOf();
@@ -107,6 +112,7 @@ export class ForkliftsService {
             }
           }
           order.check_points_time.map((check, index) => {
+            console.log(endStep);
             if (check.time > endStep!.time && index !== 0) {
               statistics.time_in_status.ending +=
                 order.ended_at!.valueOf() - endStep!.time.valueOf();
