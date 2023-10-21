@@ -39,7 +39,16 @@ export class WarehousesService {
           id,
         },
         include: {
-          loaders: true,
+          loaders: {
+            include: {
+              orders: {
+                include: {
+                  check_points_time: true,
+                  path: true,
+                },
+              },
+            },
+          },
         },
       });
     } catch (err) {
