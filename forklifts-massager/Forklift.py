@@ -4,6 +4,7 @@ from config import path_lib,rabbit
 from Task import TaskQueue
 import pika
 import json
+import requests
 
 
 class Path:
@@ -53,7 +54,11 @@ class Forklift:
         self.current_point = None
         self.next_point = None
         self.next_point_time = None
-        self.speed = uniform(0.9, 1.1)  # random speed in m/s
+        self.speed = uniform(0.9, 1.1)
+        
+        payload ={"warehouse_name": "#"+str(warehouse_id), "name": "#"+str(forklift_id)}
+        r = requests.post('http://kostjaog.ru/api/forklifts', data=payload)
+          # random speed in m/s
         # self.credentials = pika.PlainCredentials('rmuser', 'rmpassword')
         # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = self.credentials))
         # self.channel = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = pika.PlainCredentials('rmuser', 'rmpassword'))).channel()

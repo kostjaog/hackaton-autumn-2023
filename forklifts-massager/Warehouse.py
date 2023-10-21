@@ -1,9 +1,9 @@
 from Task import TaskQueue
 from random import randint
 from Forklift import Forklift
-from config import rabbit
+from config import rabbit,cords
 import time
-
+import requests
 
 
 
@@ -24,9 +24,20 @@ class Warehouse:
         self.task_queue = TaskQueue(self.id)  # queue for all task of this warehouse instance
         self.forklift_park = []  # list of all forklifts belongs to this warehouse instance
         self.forklift_count = 0  # just counter to know next forklift id
+        if(warehouse_id<len(cords)):
+            payload = {
+                        "coordX": str(cords[warehouse_id][0]),
+                        "coordY": str(cords[warehouse_id][0]),
+                        "name": "#"+str(warehouse_id)}
+        else:
+            payload = {
+                        "coordX": str(cords[0][0]),
+                        "coordY": str(cords[0][0]),
+                        "name": "#"+str(warehouse_id)}
 
+        r = requests.post('http://kostjaog.ru/api/warehouses', data=payload)
         # init random number of workers
-        for _ in range(randint(6, 15)):
+        for _ in range(6):#randint(6, 15)):
             self.add_new_forklift()
 
         # init basic queue with random number of tasks, depends on forklifts number
@@ -44,6 +55,7 @@ class Warehouse:
                 task_queue=self.task_queue
             )
         )
+        
         self.forklift_count += 1
 
     def work(self):
