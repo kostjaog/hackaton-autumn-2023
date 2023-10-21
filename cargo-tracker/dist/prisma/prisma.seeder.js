@@ -4,11 +4,6 @@ const client_1 = require("@prisma/client");
 const data = require("./seeder.data.json");
 const seed = async () => {
     const prisma = new client_1.PrismaClient();
-    const warehouse = await prisma.warehouse.create({
-        data: {
-            name: '#1',
-        },
-    });
     const sensorNames = [];
     Promise.all(data.map(async (data) => {
         const path = await prisma.path.create({
@@ -33,22 +28,7 @@ const seed = async () => {
                 },
             });
         });
-    })).then(async () => {
-        console.log('sensor 1');
-        sensorNames.map(async (sensor) => {
-            console.log('sensor 2');
-            await prisma.sensor.create({
-                data: {
-                    name: sensor,
-                    warehouse: {
-                        connect: {
-                            id: warehouse.id,
-                        },
-                    },
-                },
-            });
-        });
-    });
+    }));
 };
 seed();
 //# sourceMappingURL=prisma.seeder.js.map

@@ -15,14 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ForkliftsController = void 0;
 const common_1 = require("@nestjs/common");
 const forklifts_service_1 = require("./forklifts.service");
-const create_forklift_dto_1 = require("./dto/create-forklift.dto");
 const swagger_1 = require("@nestjs/swagger");
 let ForkliftsController = class ForkliftsController {
     constructor(forkliftsService) {
         this.forkliftsService = forkliftsService;
     }
     create(createForkliftDto) {
-        console.log('im creating war');
         return this.forkliftsService.create(createForkliftDto);
     }
     findAll() {
@@ -45,7 +43,7 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_forklift_dto_1.CreateForkliftDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ForkliftsController.prototype, "create", null);
 __decorate([

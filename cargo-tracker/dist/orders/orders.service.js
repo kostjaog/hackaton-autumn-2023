@@ -317,6 +317,7 @@ let OrdersService = class OrdersService {
                     },
                     data: {
                         status: client_1.order_status.DONE,
+                        ended_at: new Date(),
                     },
                 });
                 await this.prismaService.forklift.update({

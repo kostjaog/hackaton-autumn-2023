@@ -1,9 +1,8 @@
 import { ForkliftsService } from './forklifts.service';
-import { CreateForkliftDto } from './dto/create-forklift.dto';
 export declare class ForkliftsController {
     private readonly forkliftsService;
     constructor(forkliftsService: ForkliftsService);
-    create(createForkliftDto: CreateForkliftDto): Promise<{
+    create(createForkliftDto: any): Promise<{
         id: string;
         name: string;
         warehouse_id: string;
