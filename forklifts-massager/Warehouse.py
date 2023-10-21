@@ -55,5 +55,15 @@ class Warehouse:
             for forklift in self.forklift_park:
                 forklift.work()
             # and sometimes add new tasks to queue
-            for _ in range(randint(0, self.forklift_count)):
-                self.task_queue.create_new_task()
+            if(self.task_queue.queue.qsize()<42):
+                for _ in range(randint(0, self.forklift_count)):
+                    self.task_queue.create_new_task()
+
+    def work_by_number(self,num):
+        for i in range(num):
+            for forklift in self.forklift_park:
+                forklift.work()
+            # and sometimes add new tasks to queue
+            if(self.task_queue.queue.qsize()<42):
+                for _ in range(randint(0, self.forklift_count)):
+                    self.task_queue.create_new_task()
