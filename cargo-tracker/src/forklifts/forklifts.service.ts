@@ -13,6 +13,10 @@ export class ForkliftsService {
       return this.prismaService.forklift.create({
         data: {
           name: createForkliftDto.name,
+          last_tm_date: new Date(),
+          next_tm_date: new Date(
+            new Date().setDate(new Date().getDate() + 181),
+          ),
           warehouse: {
             connect: {
               name: createForkliftDto.warehouse_name,
