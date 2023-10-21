@@ -1,1 +1,1 @@
-{"version":3,"file":"create-forklift.dto.js","sourceRoot":"","sources":["../../../src/forklifts/dto/create-forklift.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,6CAA8C;AAE9C,MAAa,iBAAiB;CAK7B;AAJC;IAAC,IAAA,qBAAW,GAAE;;uDACgB;AAC9B;IAAC,IAAA,qBAAW,GAAE;;+CACQ;AAJxB,8CAKC"}
+{"version":3,"file":"create-forklift.dto.js","sourceRoot":"","sources":["../../../src/forklifts/dto/create-forklift.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,6CAA8C;AAE9C,MAAa,iBAAiB;CAK7B;AAJC;IAAC,IAAA,qBAAW,GAAE;;yDACkB;AAChC;IAAC,IAAA,qBAAW,GAAE;;+CACQ;AAJxB,8CAKC"}

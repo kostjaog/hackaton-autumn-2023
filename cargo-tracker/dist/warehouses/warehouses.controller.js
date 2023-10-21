@@ -15,13 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WarehousesController = void 0;
 const common_1 = require("@nestjs/common");
 const warehouses_service_1 = require("./warehouses.service");
-const create_warehouse_dto_1 = require("./dto/create-warehouse.dto");
 const swagger_1 = require("@nestjs/swagger");
 let WarehousesController = class WarehousesController {
     constructor(warehousesService) {
         this.warehousesService = warehousesService;
     }
     create(createWarehouseDto) {
+        console.log(createWarehouseDto);
         return this.warehousesService.create(createWarehouseDto);
     }
     findAll() {
@@ -38,7 +38,7 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_warehouse_dto_1.CreateWarehouseDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], WarehousesController.prototype, "create", null);
 __decorate([

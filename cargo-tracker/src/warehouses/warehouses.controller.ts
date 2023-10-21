@@ -9,7 +9,8 @@ export class WarehousesController {
   constructor(private readonly warehousesService: WarehousesService) {}
 
   @Post()
-  create(@Body() createWarehouseDto: CreateWarehouseDto) {
+  create(@Body() createWarehouseDto: any) {
+    console.log(createWarehouseDto)
     return this.warehousesService.create(createWarehouseDto);
   }
 

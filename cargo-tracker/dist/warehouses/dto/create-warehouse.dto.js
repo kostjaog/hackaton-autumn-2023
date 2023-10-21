@@ -14,11 +14,11 @@ const swagger_1 = require("@nestjs/swagger");
 class CreateWarehouseDto {
 }
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateWarehouseDto.prototype, "coordX", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)(),
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreateWarehouseDto.prototype, "coordY", void 0);
 __decorate([

@@ -18,7 +18,7 @@ async function bootstrap() {
         .setDescription('Сервис для логирования перемещений погрузчиков')
         .build();
     const swaggerDocument = swagger_1.SwaggerModule.createDocument(app, swaggerConfig);
-    swagger_1.SwaggerModule.setup('/api', app, swaggerDocument, {
+    swagger_1.SwaggerModule.setup('/documentation', app, swaggerDocument, {
         swaggerOptions: {
             supportedSubmitMethods: [],
         },

@@ -10,7 +10,20 @@ export class ForkliftsService {
   constructor(private readonly prismaService: PrismaService) {}
   create(createForkliftDto: CreateForkliftDto): Promise<forklift> {
     try {
-      return this.prismaService.forklift.create({ data: createForkliftDto });
+      return this.prismaService.forklift.create({
+        data: {
+          name: createForkliftDto.name,
+          last_tm_date: new Date(),
+          next_tm_date: new Date(
+            new Date().setDate(new Date().getDate() + 181),
+          ),
+          warehouse: {
+            connect: {
+              name: createForkliftDto.warehouse_name,
+            },
+          },
+        },
+      });
     } catch (err) {
       console.error(err.message);
       throw err;

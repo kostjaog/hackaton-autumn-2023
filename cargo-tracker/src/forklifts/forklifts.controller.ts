@@ -9,7 +9,7 @@ export class ForkliftsController {
   constructor(private readonly forkliftsService: ForkliftsService) {}
 
   @Post()
-  create(@Body() createForkliftDto: CreateForkliftDto) {
+  create(@Body() createForkliftDto: any) {
     return this.forkliftsService.create(createForkliftDto);
   }
 

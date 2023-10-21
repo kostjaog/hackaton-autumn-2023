@@ -16,7 +16,7 @@ class CreateForkliftDto {
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
-], CreateForkliftDto.prototype, "warehouse_id", void 0);
+], CreateForkliftDto.prototype, "warehouse_name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)

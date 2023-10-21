@@ -22,6 +22,7 @@ let ForkliftsController = class ForkliftsController {
         this.forkliftsService = forkliftsService;
     }
     create(createForkliftDto) {
+        console.log('im creating war');
         return this.forkliftsService.create(createForkliftDto);
     }
     findAll() {

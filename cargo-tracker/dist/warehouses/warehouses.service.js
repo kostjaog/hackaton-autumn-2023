@@ -18,6 +18,7 @@ let WarehousesService = class WarehousesService {
     }
     create(createWarehouseDto) {
         try {
+            console.log(createWarehouseDto);
             return this.prismaService.warehouse.create({
                 data: {
                     coordX: createWarehouseDto.coordX,

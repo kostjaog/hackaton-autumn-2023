@@ -1,4 +1,4 @@
 export declare class CreateForkliftDto {
-    readonly warehouse_id: string;
+    readonly warehouse_name: string;
     readonly name: string;
 }
