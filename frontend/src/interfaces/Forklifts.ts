@@ -8,23 +8,27 @@ export interface Forklift {
   last_tm_date: string;
   next_tm_date: string;
   average_speed: null | number;
-  orders: {
+  orders: Order[];
+}
+
+export interface Order {
+  id: string;
+  status: "PROCESSING" | "DONE" | "CREATED";
+  created_at: string;
+  ended_at: null | string;
+  forklift_name: string;
+  warehouse_id: string;
+  path_id: string;
+  path: {
     id: string;
-    status: "PROCESSING";
-    created_at: string;
-    ended_at: null | string;
-    forklift_name: string;
-    warehouse_id: string;
-    path_id: string;
-    path: {
-      id: string;
-      target_name: RackCheckPointName;
-    };
-    check_points_time: {
-      id: string;
-      point_name: RouteCheckPointName;
-      time: string;
-      order_id: string;
-    }[];
-  }[];
+    target_name: RackCheckPointName;
+  };
+  check_points_time: OrderPointsTime[];
+}
+
+export interface OrderPointsTime {
+  id: string;
+  point_name: RouteCheckPointName;
+  time: string;
+  order_id: string;
 }
