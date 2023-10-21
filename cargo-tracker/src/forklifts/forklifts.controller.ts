@@ -10,6 +10,7 @@ export class ForkliftsController {
 
   @Post()
   create(@Body() createForkliftDto: CreateForkliftDto) {
+    console.log('im creating war')
     return this.forkliftsService.create(createForkliftDto);
   }
 

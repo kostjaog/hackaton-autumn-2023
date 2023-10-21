@@ -9,6 +9,7 @@ export class WarehousesService {
 
   create(createWarehouseDto: CreateWarehouseDto): Promise<warehouse> {
     try {
+      console.log(createWarehouseDto)
       return this.prismaService.warehouse.create({
         data: {
           coordX: createWarehouseDto.coordX,

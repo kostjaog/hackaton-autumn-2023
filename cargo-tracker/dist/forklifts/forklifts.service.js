@@ -19,7 +19,16 @@ let ForkliftsService = class ForkliftsService {
     }
     create(createForkliftDto) {
         try {
-            return this.prismaService.forklift.create({ data: createForkliftDto });
+            return this.prismaService.forklift.create({
+                data: {
+                    name: createForkliftDto.name,
+                    warehouse: {
+                        connect: {
+                            name: createForkliftDto.warehouse_name,
+                        },
+                    },
+                },
+            });
         }
         catch (err) {
             console.error(err.message);

@@ -19,6 +19,7 @@ const seed = async () => {
         data.path_sequence.map(async (point) => {
             if (!sensorNames.includes(point.check_point_name)) {
                 sensorNames.push(point.check_point_name);
+                console.log(point.check_point_name, sensorNames);
             }
             await prisma.check_point.create({
                 data: {
