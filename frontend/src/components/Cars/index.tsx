@@ -4,8 +4,8 @@ import Car from "./Car";
 const Cars = ({ items, onClick }: { items: Forklift[]; onClick: (item: Forklift) => void }) => {
   return (
     <div className="cars">
-      {items.map((item) => (
-        <Car onClick={() => onClick(item)} number={item.name} />
+      {items.map((item, index) => (
+        <Car key={index} onClick={() => onClick(item)} number={item.name} />
       ))}
     </div>
   );

@@ -1,5 +1,7 @@
 import { RackCheckPointName, RouteCheckPointName } from "../Types/Checkpoints";
 
+export type ForkliftStatus = "PROCESSING_ORDER" | "WAITING_ORDER" | "ENDING_ORDER";
+
 export interface Forklift {
   id: string;
   name: string;

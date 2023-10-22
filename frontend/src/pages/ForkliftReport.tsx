@@ -7,7 +7,12 @@ import { formatDate } from "../utils/formatDate";
 import Button from "../components/Button";
 import Modal from "../components/Modal";
 import Calendar from "react-calendar";
-import { Pie, Bar } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
+import { toast } from "react-toastify";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ForkliftReport = () => {
   const location = useLocation();
@@ -20,20 +25,7 @@ const ForkliftReport = () => {
   const [startDate, setStartDate] = React.useState<any>(null);
   const [calendarIsVisible, setCalendarIsVisible] = React.useState(false);
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Chart.js Bar Chart",
-      },
-    },
-  };
-
-  const interval = React.useRef<any>();
+  const calendarRef = React.useRef();
 
   const [statistics, setStatistics] = React.useState<{
     "travel_distance": number;
@@ -56,7 +48,9 @@ const ForkliftReport = () => {
     fetch(`http://81.31.244.133/api/forklifts/${id}`).then(async (res) => {
       const data = await res.json();
       console.log(data);
-      setItem(data);
+      if (res.status === 200) {
+        setItem(data);
+      }
     });
   }, []);
 
@@ -75,8 +69,22 @@ const ForkliftReport = () => {
     ).then(async (res) => {
       const data = await res.json();
 
-      setStatistics(data);
-      console.log(data);
+      if (res.status === 200) {
+        setStatistics(data);
+        setTimeout(() => {
+          window.scrollTo(0, document.body.scrollHeight);
+        }, 200);
+      } else {
+        const notify = () =>
+          toast("Ошибка! В данный период выполненные заказыв отсутствуют", {
+            type: "error",
+            style: {
+              fontSize: "12px",
+              fontFamily: "Montserrat, sans-serif",
+            },
+          });
+        notify();
+      }
     });
   };
 
@@ -136,7 +144,13 @@ const ForkliftReport = () => {
                     <Button onClick={() => setCalendarIsVisible(true)}>Выбрать дату</Button>
                   )}
                   {calendarIsVisible && (
-                    <div style={{ position: "absolute", top: 0, right: 0 }}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "100%",
+                        right: 0,
+                        transform: "translateY(50px)",
+                      }}>
                       <Calendar
                         selectRange={true}
                         onChange={(value) => {
@@ -151,8 +165,176 @@ const ForkliftReport = () => {
               </div>
               <div>
                 {item.orders.some((order) => order.status === "DONE") ? (
-                  // <div>{JSON.stringify(statistics)}</div>
-                  <div>{["Количество заказов", "Пройденная дистанция", ""]}</div>
+                  <div>
+                    {statistics ? (
+                      <div style={{ display: "flex", gap: 10, flexDirection: "column" }}>
+                        <div style={{ display: "flex", gap: 20, marginTop: 30 }}>
+                          <div
+                            style={{
+                              background: "#e4e4e4",
+                              borderRadius: 10,
+                              padding: "15px",
+                              flex: 1,
+                              fontSize: 12,
+                              textAlign: "center",
+                            }}>
+                            Нерабочее время:
+                            <h1 style={{ marginBottom: 0, marginTop: 10 }}>
+                              {(statistics.downtime / 1000 / 60).toFixed(1)} минут
+                            </h1>
+                          </div>
+                          <div
+                            style={{
+                              background: "#e4e4e4",
+                              borderRadius: 10,
+                              padding: "15px",
+                              flex: 1,
+                              fontSize: 12,
+                              textAlign: "center",
+                            }}>
+                            Пройденая дистанция:
+                            <h1 style={{ marginBottom: 0, marginTop: 10 }}>
+                              {statistics.travel_distance} метров
+                            </h1>
+                          </div>
+                          <div
+                            style={{
+                              background: "#e4e4e4",
+                              borderRadius: 10,
+                              padding: "15px",
+                              flex: 1,
+                              fontSize: 12,
+                              textAlign: "center",
+                            }}>
+                            Количество выполненных заказов:
+                            <h1 style={{ marginBottom: 0, marginTop: 10 }}>
+                              {statistics.orders_count} шт.
+                            </h1>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: 20 }}>
+                          <div
+                            style={{
+                              marginTop: 10,
+                              background: "#cbcbff",
+                              borderRadius: 10,
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 12,
+                              padding: "15px 15px",
+                              flex: 1,
+                              textAlign: "center",
+                            }}>
+                            Проведено времени в статусе ожидания заказа
+                            <h1
+                              style={{
+                                fontWeight: 600,
+                                fontSize: 20,
+                                marginTop: 10,
+                                marginBottom: 0,
+                              }}>
+                              {Math.abs(statistics?.time_in_status.waiting / 1000 / 60).toFixed(1)}{" "}
+                              минут
+                            </h1>
+                          </div>
+                          <div
+                            style={{
+                              marginTop: 10,
+                              background: "#cbffd0",
+                              borderRadius: 10,
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 12,
+                              padding: "15px 15px",
+                              flex: 1,
+                              textAlign: "center",
+                            }}>
+                            Проведено времени в статусе выполнения заказа
+                            <h1
+                              style={{
+                                fontWeight: 600,
+                                fontSize: 20,
+                                marginTop: 10,
+                                marginBottom: 0,
+                              }}>
+                              {Math.abs(statistics?.time_in_status.processing / 1000 / 60).toFixed(
+                                1
+                              )}{" "}
+                              минут
+                            </h1>
+                          </div>
+                          <div
+                            style={{
+                              marginTop: 10,
+                              background: "#ffcbcb",
+                              borderRadius: 10,
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 12,
+                              padding: "15px 15px",
+                              flex: 1,
+                              textAlign: "center",
+                            }}>
+                            Проведено времени в статусе завершения заказа
+                            <h1
+                              style={{
+                                fontWeight: 600,
+                                fontSize: 20,
+                                marginTop: 10,
+                                marginBottom: 0,
+                              }}>
+                              {Math.abs(statistics?.time_in_status.ending / 1000 / 60).toFixed(1)}{" "}
+                              минут
+                            </h1>
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            width: 400,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            marginTop: 30,
+                            alignSelf: "center",
+                          }}>
+                          <h1>Статистика по дням</h1>
+                          <Pie
+                            options={{}}
+                            data={{
+                              labels: statistics?.travel_time.map((item) =>
+                                Math.abs(item.move_time / 1000 / 60).toFixed(2)
+                              ),
+                              datasets: [
+                                {
+                                  label: "Статистика по дням (минуты)",
+                                  data: statistics?.travel_time.map((item) =>
+                                    Math.abs(item.move_time / 1000 / 60).toFixed(2)
+                                  ),
+                                  backgroundColor: statistics?.travel_time.map(
+                                    (_) =>
+                                      "#" +
+                                      ((Math.random() * 0xffffff) << 0)
+                                        .toString(16)
+                                        .padStart(6, "0") +
+                                      40
+                                  ),
+                                },
+                              ],
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div>Выберите дату</div>
+                    )}{" "}
+                    {/* {["Количество заказов", "Пройденная дистанция", ""]} */}
+                  </div>
                 ) : (
                   <p>Нет выполненных заказов</p>
                 )}
@@ -181,7 +363,7 @@ const RowInfo = ({ label, value }: { label: string; value: string }) => {
         borderBottom: "1px solid #fdc06440",
       }}>
       <p>{label}</p>
-      <b>{value}</b>
+      <b style={{ textAlign: "end" }}>{value}</b>
     </div>
   );
 };
