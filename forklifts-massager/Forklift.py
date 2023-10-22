@@ -54,7 +54,7 @@ class Forklift:
         self.current_point = None
         self.next_point = None
         self.next_point_time = None
-        self.speed = uniform(0.9, 1.1)
+        self.speed = uniform(0.18, 0.22)
         
         payload ={"warehouse_name": "#"+str(warehouse_id), "name": "#"+str(forklift_id)}
         r = requests.post('http://kostjaog.ru/api/forklifts', data=payload)
