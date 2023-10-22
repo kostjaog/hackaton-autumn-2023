@@ -10,7 +10,6 @@ export class WarehousesController {
 
   @Post()
   create(@Body() createWarehouseDto: any) {
-    console.log(createWarehouseDto)
     return this.warehousesService.create(createWarehouseDto);
   }
 

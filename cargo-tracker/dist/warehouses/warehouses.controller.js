@@ -21,7 +21,6 @@ let WarehousesController = class WarehousesController {
         this.warehousesService = warehousesService;
     }
     create(createWarehouseDto) {
-        console.log(createWarehouseDto);
         return this.warehousesService.create(createWarehouseDto);
     }
     findAll() {

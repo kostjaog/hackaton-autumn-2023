@@ -6,6 +6,7 @@ import { forklift_status, order, order_status } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
   MessageHandlerErrorBehavior,
+  Nack,
   RabbitSubscribe,
 } from '@golevelup/nestjs-rabbitmq';
 import { rmq_order_dto } from './dto/rmq-order.dto';
@@ -346,7 +347,7 @@ export class OrdersService {
       return;
     } catch (err) {
       console.error(err.message);
-      // return new Nack(false);
+      return new Nack(false);
     }
   }
 }

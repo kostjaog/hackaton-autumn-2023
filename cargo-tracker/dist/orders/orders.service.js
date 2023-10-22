@@ -333,6 +333,7 @@ let OrdersService = class OrdersService {
         }
         catch (err) {
             console.error(err.message);
+            return new nestjs_rabbitmq_1.Nack(false);
         }
     }
 };
