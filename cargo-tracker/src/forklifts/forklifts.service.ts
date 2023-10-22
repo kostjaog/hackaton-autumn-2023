@@ -188,9 +188,8 @@ export class ForkliftsService {
             }
           });
           order.path.check_points.map((point) => {
-            statistics.travel_distance += point.next_check_point_distance;
+            statistics.travel_distance += point.next_check_point_distance * 2;
           });
-          statistics.travel_distance *= 2;
         }),
       );
       statistics.downtime +=
