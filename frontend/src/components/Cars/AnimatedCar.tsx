@@ -1,5 +1,5 @@
 import React from "react";
-import { useAnimate, motion, animateValue, useAnimation } from "framer-motion";
+import { useAnimate } from "framer-motion";
 import { Forklift } from "../../interfaces/Forklifts";
 import { POINTS_POSITIONS } from "../../data/points";
 import { ROUTES } from "../../data/routes";
@@ -19,6 +19,7 @@ interface AnimatedData {
     pointName: string;
     distance: number;
   };
+  finishPoint: RouteCheckPointName | undefined;
   currentRoute:
     | {
         target: RackCheckPointName;
@@ -32,7 +33,7 @@ interface AnimatedData {
   status: "PROCESSING_ORDER" | "WAITING_ORDER" | "ENDING_ORDER";
 }
 
-const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLiftsFroModal }) => {
+const AnimatedCar: React.FC<AnimatedCarProps> = ({ forklift, setForkLiftsFroModal }) => {
   const [scope, animate] = useAnimate();
 
   const [isAnimated, setIsAnimated] = React.useState(false);
@@ -56,43 +57,51 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
       const currentRoute = ROUTES.find(
         (item) => item.target === forklift.orders.slice(-1)[0].path.target_name
       );
+      const currentPoint =
+        forklift.orders.slice(-1)[0].check_points_time.length === 0
+          ? (currentRoute?.routes[0].pointName as string)
+          : forklift.orders.slice(-1)[0].check_points_time?.slice(-1)?.[0].point_name;
       let waiting = false;
 
-      console.log(currentRoute);
+      // console.log(currentRoute, forklift.id);
 
       const animatedData: AnimatedData = {
-        currentPoint:
-          forklift.orders.slice(-1)[0].check_points_time.length === 0
-            ? (currentRoute?.routes[0].pointName as string)
-            : forklift.orders.slice(-1)[0].check_points_time?.slice(-1)?.[0].point_name,
-        findedIndex: currentRoute!.routes.findIndex(
-          (item) => item.pointName === getCurrentForkliftRoute(forklift)?.checkPointName
-        ),
+        currentPoint,
+        findedIndex: currentRoute?.routes.findIndex(
+          (item) => item.pointName === currentPoint
+        ) as number,
         nextPoint: null,
-        currentRoute: ROUTES.find(
+        currentRoute,
+        finishPoint: ROUTES.find(
           (item) => item.target === forklift.orders.slice(-1)[0].path.target_name
-        ),
+        )?.routes.slice(-1)[0].pointName,
         status: forklift.status,
       };
 
-      if (
-        forklift.orders.slice(-1)[0].check_points_time.slice(-1)[0].point_name ===
-        currentRoute?.routes.slice(-1)[0].pointName
-      ) {
+      console.log(forklift.orders.slice(-1)[0].path.target_name);
+      console.log(animatedData.findedIndex, animatedData.finishPoint);
+
+      if (animatedData.currentPoint === animatedData.finishPoint) {
+        console.log("IS WAITING");
+        console.log(
+          forklift.orders
+            .slice(-1)[0]
+            .check_points_time.slice(-2)
+            .every((item) => item.point_name === animatedData.finishPoint)
+        );
         setIsWaiting(true);
         waiting = true;
         if (
           forklift.orders
             .slice(-1)[0]
             .check_points_time.slice(-2)
-            .every((item) => item.point_name === currentRoute?.routes.slice(-1)[0].pointName)
+            .every((item) => item.point_name === animatedData.finishPoint)
         ) {
           const coords = POINTS_POSITIONS.find(
-            (item) =>
-              item.checkPointName === currentRoute?.routes[animatedData.findedIndex - 1]?.pointName
+            (item) => item.checkPointName === currentRoute?.routes.slice(-2)[0].pointName
           )?.coords;
-          animateBackHorizontal(coords, 20);
-          setIsWaiting(false);
+          // animateBackHorizontal(coords, 5);
+          // setIsWaiting(false);
         }
         return;
       } else {
@@ -104,32 +113,35 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
         if (forklift.status === "PROCESSING_ORDER") {
           animatedData.nextPoint =
             currentRoute!.routes[animatedData.findedIndex + 1] ?? currentRoute!.routes.slice(-1)[0];
-          setIsWaiting(false);
         } else {
           animatedData.nextPoint =
             currentRoute!.routes[animatedData.findedIndex - 1] ?? currentRoute!.routes[0];
-          setIsWaiting(false);
         }
+        setIsWaiting(false);
         if (
           animatedData.nextPoint?.pointName !== dataForAnimate?.nextPoint?.pointName &&
           dataForAnimate !== null
         ) {
-          const coords = POINTS_POSITIONS.find(
-            (item) =>
-              item.checkPointName ===
+          console.log(
+            "JSON",
+            JSON.stringify(
               dataForAnimate?.currentRoute?.routes[
-                dataForAnimate.findedIndex + dataForAnimate.status === "ENDING_ORDER" ? -1 : 1
-              ].pointName
+                dataForAnimate.findedIndex + (dataForAnimate.status === "ENDING_ORDER" ? -1 : 1)
+              ]
+            )
+          );
+          const coords = POINTS_POSITIONS.find(
+            (item) => item.checkPointName === dataForAnimate.nextPoint?.pointName
           )?.coords;
 
           if (dataForAnimate?.status === "ENDING_ORDER") {
             checkOrientation(true, dataForAnimate) === "horizontal"
-              ? animateBackHorizontal(coords, 0.1)
-              : animateBackVertical(coords, 0.1);
+              ? animateBackHorizontal(coords, 1)
+              : animateBackVertical(coords, 1);
           } else {
             checkOrientation(false, dataForAnimate) === "horizontal"
-              ? animateForwardHorizontal(coords, 0.1)
-              : animateForwardVertical(coords, 0.1);
+              ? animateForwardHorizontal(coords, 1)
+              : animateForwardVertical(coords, 1);
           }
         }
 
@@ -143,10 +155,7 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
     if (dataForAnimate && !isWaiting) {
       if (forklift.status === "ENDING_ORDER") {
         const coords = POINTS_POSITIONS.find(
-          (item) =>
-            item.checkPointName ===
-              dataForAnimate?.currentRoute?.routes[dataForAnimate.findedIndex - 1]?.pointName ??
-            dataForAnimate?.currentRoute?.routes[0].pointName
+          (item) => item.checkPointName === dataForAnimate?.nextPoint?.pointName
         )?.coords;
 
         if (
@@ -172,10 +181,7 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
         }
       } else {
         const coords = POINTS_POSITIONS.find(
-          (item) =>
-            item.checkPointName ===
-              dataForAnimate.currentRoute?.routes[dataForAnimate.findedIndex + 1]?.pointName ??
-            dataForAnimate.currentRoute?.routes.slice(-1)[0].pointName
+          (item) => item.checkPointName === dataForAnimate.nextPoint?.pointName
         )?.coords;
         if (
           (["K9", "K6", "K3"].includes(dataForAnimate.nextPoint!.pointName) &&
@@ -200,7 +206,7 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
         }
       }
     }
-    setDataForAnimate(null);
+    // setDataForAnimate(null);
   }, [dataForAnimate]);
 
   function getCurrentForkliftRoute(forklift: Forklift) {
@@ -354,14 +360,23 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
   return (
     <div
       ref={scope}
-      key={index}
-      className={`active-car-${index + 1}`}
+      // className={`active-car-${index + 1}`}
       style={{
+        display:
+          dataForAnimate ||
+          (forklift.orders.slice(-1)[0].check_points_time?.[0]?.point_name === "K1" &&
+            (forklift.status === "PROCESSING_ORDER" || forklift.status === "ENDING_ORDER"))
+            ? "block"
+            : "none",
+        transformOrigin: "center",
         position: "absolute",
         zIndex: 5,
         transform: "translate(40%, 40%) rotate(0deg)",
-        right: getCurrentForkliftRoute(forklift)?.coords.x,
-        bottom: getCurrentForkliftRoute(forklift)?.coords.y,
+        right: POINTS_POSITIONS.find((item) => item.checkPointName === dataForAnimate?.currentPoint)
+          ?.coords.x,
+        bottom: POINTS_POSITIONS.find(
+          (item) => item.checkPointName === dataForAnimate?.currentPoint
+        )?.coords.y,
       }}>
       <Car
         onClick={() => setForkLiftsFroModal(forklift)}
@@ -373,4 +388,4 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ index, forklift, setForkLifts
   );
 };
 
-export default React.memo(AnimatedCar);
+export default AnimatedCar;

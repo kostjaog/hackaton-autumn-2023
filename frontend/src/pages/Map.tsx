@@ -23,7 +23,7 @@ const Map = () => {
 
       setWarehouses(data);
 
-      console.log(data);
+      // console.log(data);
     });
   }, []);
 

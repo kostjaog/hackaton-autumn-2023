@@ -42,12 +42,12 @@ const ForkliftReport = () => {
     };
   } | null>(null);
 
-  React.useEffect(() => console.log(startDate), [startDate]);
+  // React.useEffect(() => console.log(startDate), [startDate]);
 
   React.useEffect(() => {
     fetch(`http://81.31.244.133/api/forklifts/${id}`).then(async (res) => {
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       if (res.status === 200) {
         setItem(data);
       }

@@ -18,6 +18,7 @@ import Button from "../components/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getRusStatus } from "../utils/getRusStatus";
 import AnimatedCar from "../components/Cars/AnimatedCar";
+import { isVisible } from "@testing-library/user-event/dist/utils";
 
 const WAREHOUSE_DATA: WareHouseData[] = [
   {
@@ -53,7 +54,6 @@ const Warehouse = () => {
 
   const [forklifts, setForklifts] = React.useState<Forklift[] | null>(null);
   const [forkliftsForModal, setForkLiftsFroModal] = React.useState<Forklift | null>(null);
-  const [currentRoute, setCurrentRoute] = React.useState();
 
   const interval = React.useRef<any>();
 
@@ -62,8 +62,6 @@ const Warehouse = () => {
       fetch(`http://81.31.244.133/api/warehouses/${id.pathname.replace("/warehouse/", "")}`).then(
         async (res) => {
           const data = await res.json();
-
-          console.log(data);
 
           setForklifts(data.loaders);
         }
@@ -106,34 +104,17 @@ const Warehouse = () => {
           </div>
         </div>
         <div className="active-drive-car-wrapper">
-          {POINTS_POSITIONS.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                height: 10,
-                width: 10,
-                position: "absolute",
-                bottom: item.coords.y + "px",
-                right: item.coords.x + "px",
-                zIndex: 5,
-              }}
-            />
-          ))}
           <div className="active-cars-container">
-            {forklifts
-              ?.filter(
-                (item) => item.orders.slice(-1)[0].check_points_time?.[0]?.point_name === "K1"
-              )
-              .filter(
-                (item) => item.status === "PROCESSING_ORDER" || item.status === "ENDING_ORDER"
-              )
-              .map((forklift, index) => (
+            {forklifts?.map((forklift, index) => {
+              return (
                 <AnimatedCar
+                  key={index}
                   forklift={forklift}
                   index={index}
                   setForkLiftsFroModal={setForkLiftsFroModal}
                 />
-              ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -155,8 +136,9 @@ const Warehouse = () => {
           <p style={{ textAlign: "center", flex: 1, fontWeight: 700 }}>Кол-во заказов</p>
           <p style={{ textAlign: "center", flex: 1, fontWeight: 700 }}>Текущий статус</p>
         </div>
-        {forklifts?.map((item) => (
+        {forklifts?.map((item, index) => (
           <div
+            key={index}
             onClick={() => setForkLiftsFroModal(item)}
             style={{
               cursor: "pointer",
