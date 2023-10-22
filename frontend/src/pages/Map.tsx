@@ -7,10 +7,10 @@ import WareHouseImg from "../assets/imgs/warehouse.png";
 const Map = () => {
   const [warehouses, setWarehouses] = React.useState<
     | {
-        coordX: "47.234852";
-        coordY: "47.234852";
+        coordX: string;
+        coordY: string;
         id: string;
-        name: "#0";
+        name: string;
       }[]
     | null
   >(null);
@@ -20,6 +20,8 @@ const Map = () => {
   React.useEffect(() => {
     fetch("http://kostjaog.ru/api/warehouses").then(async (res) => {
       const data = await res.json();
+
+      console.log(data);
 
       setWarehouses(data);
 
@@ -65,7 +67,7 @@ const Map = () => {
         {warehouses && (
           <YaMap
             style={{ height: "calc(100vh - 56px)", width: "100%" }}
-            defaultState={{ center: [+warehouses[1].coordY, +warehouses[0].coordX], zoom: 14 }}>
+            defaultState={{ center: [+warehouses[1].coordX, +warehouses[0].coordY], zoom: 14 }}>
             {warehouses.map((item) => (
               <Placemark
                 onClick={() => {
