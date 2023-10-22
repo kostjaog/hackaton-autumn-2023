@@ -49,6 +49,9 @@ let WarehousesService = class WarehousesService {
                 },
                 include: {
                     loaders: {
+                        orderBy: {
+                            name: 'asc',
+                        },
                         include: {
                             orders: {
                                 include: {

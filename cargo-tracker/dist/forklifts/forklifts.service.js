@@ -22,8 +22,8 @@ let ForkliftsService = class ForkliftsService {
             return this.prismaService.forklift.create({
                 data: {
                     name: createForkliftDto.name,
-                    last_tm_date: new Date(),
-                    next_tm_date: new Date(new Date().setDate(new Date().getDate() + 181)),
+                    last_tm_date: new Date(createForkliftDto.last_tm_date),
+                    next_tm_date: new Date(new Date().setDate(new Date(createForkliftDto.last_tm_date).getDate() + 181)),
                     warehouse: {
                         connect: {
                             name: createForkliftDto.warehouse_name,
@@ -176,7 +176,7 @@ let ForkliftsService = class ForkliftsService {
                     }
                 });
                 order.path.check_points.map((point) => {
-                    statistics.travel_distance += point.next_check_point_distance;
+                    statistics.travel_distance += point.next_check_point_distance * 2;
                 });
             }));
             statistics.downtime +=

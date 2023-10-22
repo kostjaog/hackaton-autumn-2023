@@ -8,7 +8,7 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_name: string;
+        forklift_name: number;
         warehouse_id: string;
         path_id: string;
     }>;
@@ -17,7 +17,7 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_name: string;
+        forklift_name: number;
         warehouse_id: string;
         path_id: string;
     }[]>;
@@ -26,7 +26,7 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_name: string;
+        forklift_name: number;
         warehouse_id: string;
         path_id: string;
     }>;
@@ -35,7 +35,7 @@ export declare class OrdersController {
         status: import(".prisma/client").$Enums.order_status;
         created_at: Date;
         ended_at: Date | null;
-        forklift_name: string;
+        forklift_name: number;
         warehouse_id: string;
         path_id: string;
     }>;
