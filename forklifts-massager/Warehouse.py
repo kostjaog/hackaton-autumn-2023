@@ -27,12 +27,12 @@ class Warehouse:
         if(warehouse_id<len(cords)):
             payload = {
                         "coordX": str(cords[warehouse_id][0]),
-                        "coordY": str(cords[warehouse_id][0]),
+                        "coordY": str(cords[warehouse_id][1]),
                         "name": "#"+str(warehouse_id)}
         else:
             payload = {
                         "coordX": str(cords[0][0]),
-                        "coordY": str(cords[0][0]),
+                        "coordY": str(cords[0][1]),
                         "name": "#"+str(warehouse_id)}
 
         r = requests.post('http://kostjaog.ru/api/warehouses', data=payload)
