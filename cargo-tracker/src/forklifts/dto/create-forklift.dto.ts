@@ -5,4 +5,5 @@ export class CreateForkliftDto {
   readonly warehouse_name: string;
   @ApiProperty()
   readonly name: string;
+  readonly last_tm_date: Date;
 }
