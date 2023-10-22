@@ -5,6 +5,9 @@ import { Routes, BrowserRouter, Route, Link } from "react-router-dom";
 import { RouterProvider } from "react-router";
 import ForkliftReport from "./pages/ForkliftReport";
 import Map from "./pages/Map";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const router = [
@@ -30,12 +33,6 @@ function App() {
             <li>
               <Link to={"/"}>Главная</Link>
             </li>
-            <li>
-              <Link to={"/reports"}>Отчёты</Link>
-            </li>
-            <li>
-              <Link to={"/statistics"}>Статистика</Link>
-            </li>
           </ul>
         </nav>
         <Routes>
@@ -44,6 +41,7 @@ function App() {
           ))}
         </Routes>
       </div>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

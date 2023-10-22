@@ -1,6 +1,5 @@
 nav {
   background: $orange;
-  margin-bottom: 20px;
   ul {
     display: flex;
     justify-content: center;
@@ -12,6 +11,7 @@ nav {
       height: 100%;
 
       a {
+        padding: 20px 40px;
         color: $black;
         text-decoration: none;
       }

@@ -14,9 +14,11 @@ const Modal = ({
     window.document.body.style.overflow = isVisible ? "hidden" : "visible";
   }, [isVisible]);
 
+  const modalRef = React.useRef<any>();
+
   return isVisible ? (
-    <div className="modal">
-      <div className="modal-backdrop" onClick={() => console.log("TEST")} />
+    <div className="modal" style={{ top: window.scrollY }} ref={modalRef}>
+      <div className="modal-backdrop" onClick={() => closeModal()} />
       <div className="modal-container">
         <div onClick={closeModal} className="modal-close-btn">
           <AiOutlineClose />
