@@ -45,6 +45,7 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ forklift, setForkLiftsFroModa
       scope.current,
       {
         transform: "translate(34%, 80%) rotate(180deg)",
+
       },
       {
         duration: 1,
@@ -373,10 +374,10 @@ const AnimatedCar: React.FC<AnimatedCarProps> = ({ forklift, setForkLiftsFroModa
         zIndex: 5,
         transform: "translate(40%, 40%) rotate(0deg)",
         right: POINTS_POSITIONS.find((item) => item.checkPointName === dataForAnimate?.currentPoint)
-          ?.coords.x,
+          ?.coords.x ?? getCurrentForkliftRoute(forklift)?.coords.x,
         bottom: POINTS_POSITIONS.find(
           (item) => item.checkPointName === dataForAnimate?.currentPoint
-        )?.coords.y,
+        )?.coords.y ?? getCurrentForkliftRoute(forklift)?.coords.y,
       }}>
       <Car
         onClick={() => setForkLiftsFroModal(forklift)}

@@ -289,7 +289,7 @@ const ForkliftReport = () => {
                                 marginTop: 10,
                                 marginBottom: 0,
                               }}>
-                              {Math.abs(statistics?.time_in_status.ending / 1000 / 60).toFixed(1)}{" "}
+                              {Math.abs(statistics?.time_in_status.ending / 10000 / 60).toFixed(1)}{" "}
                               минут
                             </h1>
                           </div>
