@@ -4,7 +4,7 @@ export declare class ForkliftsController {
     constructor(forkliftsService: ForkliftsService);
     create(createForkliftDto: any): Promise<{
         id: string;
-        name: string;
+        name: number;
         warehouse_id: string;
         status: import(".prisma/client").$Enums.forklift_status;
         last_tm_date: Date | null;
@@ -13,7 +13,7 @@ export declare class ForkliftsController {
     }>;
     findAll(): Promise<{
         id: string;
-        name: string;
+        name: number;
         warehouse_id: string;
         status: import(".prisma/client").$Enums.forklift_status;
         last_tm_date: Date | null;
@@ -22,7 +22,7 @@ export declare class ForkliftsController {
     }[]>;
     findOne(id: string): Promise<{
         id: string;
-        name: string;
+        name: number;
         warehouse_id: string;
         status: import(".prisma/client").$Enums.forklift_status;
         last_tm_date: Date | null;
@@ -31,7 +31,7 @@ export declare class ForkliftsController {
     }>;
     remove(id: string): Promise<{
         id: string;
-        name: string;
+        name: number;
         warehouse_id: string;
         status: import(".prisma/client").$Enums.forklift_status;
         last_tm_date: Date | null;
@@ -41,7 +41,7 @@ export declare class ForkliftsController {
     getStatistics(id: string, start_date: Date, end_date: Date): Promise<import("./dto/statistics.dto").forklift_statistics_dto>;
     transferForklift(forklift_id: string, warehouse_id: string): Promise<{
         id: string;
-        name: string;
+        name: number;
         warehouse_id: string;
         status: import(".prisma/client").$Enums.forklift_status;
         last_tm_date: Date | null;

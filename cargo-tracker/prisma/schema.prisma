@@ -38,7 +38,7 @@ model order {
   created_at  DateTime  @default(now())
   ended_at    DateTime?
 
-  forklift_name String
+  forklift_name Int
   warehouse_id  String
   forklift  forklift @relation(fields: [forklift_name, warehouse_id], references: [name, warehouse_id])
 
@@ -59,7 +59,7 @@ model forklift_step {
 
 model forklift {
   id  String  @unique @default(uuid())
-  name  String
+  name  Int
   warehouse_id  String
   warehouse warehouse @relation(fields: [warehouse_id], references: [id])
   status  forklift_status @default(WAITING_ORDER)

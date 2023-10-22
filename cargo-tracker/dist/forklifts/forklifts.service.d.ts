@@ -8,7 +8,7 @@ export declare class ForkliftsService {
     create(createForkliftDto: CreateForkliftDto): Promise<forklift>;
     warehouseTransfer(forklift_id: string, warehouse_id: string): Promise<{
         id: string;
-        name: string;
+        name: number;
         warehouse_id: string;
         status: import(".prisma/client").$Enums.forklift_status;
         last_tm_date: Date | null;

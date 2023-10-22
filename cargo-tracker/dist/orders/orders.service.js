@@ -77,6 +77,7 @@ let OrdersService = class OrdersService {
         }
     }
     async loadOrderDataFromRMQ(msg, amqpMsg) {
+        var _a;
         try {
             if (amqpMsg.fields.routingKey === 'start_task') {
                 console.log('Starting task...', msg.forklift_name);
@@ -272,6 +273,13 @@ let OrdersService = class OrdersService {
                             not: client_1.order_status.DONE,
                         },
                     },
+                    include: {
+                        path: {
+                            include: {
+                                check_points: true,
+                            },
+                        },
+                    },
                 });
                 if (order) {
                     const newStep = await this.prismaService.forklift_step.create({
@@ -328,6 +336,20 @@ let OrdersService = class OrdersService {
                         status: client_1.forklift_status.WAITING_ORDER,
                     },
                 });
+                const averageLength = order[0].path.check_points.reduce((next, curr) => {
+                    return (next += curr.next_check_point_distance);
+                }, 0);
+                if (order[0].ended_at) {
+                    const timeInPath = ((_a = order[0].ended_at) === null || _a === void 0 ? void 0 : _a.valueOf()) - order[0].created_at.valueOf();
+                    await this.prismaService.forklift.update({
+                        where: {
+                            id: forklift.id,
+                        },
+                        data: {
+                            average_speed: averageLength / new Date(timeInPath).getMinutes(),
+                        },
+                    });
+                }
             }
             return;
         }
