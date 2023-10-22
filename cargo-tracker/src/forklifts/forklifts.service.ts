@@ -12,7 +12,7 @@ export class ForkliftsService {
     try {
       return this.prismaService.forklift.create({
         data: {
-          name: createForkliftDto.name,
+          name: Number(createForkliftDto.name),
           last_tm_date: new Date(createForkliftDto.last_tm_date),
           next_tm_date: new Date(
             new Date().setDate(
