@@ -247,7 +247,7 @@ export class OrdersService {
         const forklift = await this.prismaService.forklift.findUnique({
           where: {
             name_warehouse_id: {
-              name: order[0].forklift_name,
+              name: Number(order[0].forklift_name),
               warehouse_id: warehouse.id,
             },
           },
@@ -323,7 +323,7 @@ export class OrdersService {
         const forklift = await this.prismaService.forklift.findUnique({
           where: {
             name_warehouse_id: {
-              name: order[0].forklift_name,
+              name: Number(order[0].forklift_name),
               warehouse_id: warehouse.id,
             },
           },
