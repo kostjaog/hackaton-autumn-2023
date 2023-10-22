@@ -286,6 +286,13 @@ export class OrdersService {
               not: order_status.DONE,
             },
           },
+          include: {
+            path: {
+              include: {
+                check_points: true,
+              },
+            },
+          },
         });
         if (order) {
           const newStep = await this.prismaService.forklift_step.create({
@@ -343,6 +350,24 @@ export class OrdersService {
             status: forklift_status.WAITING_ORDER,
           },
         });
+        const averageLength = order[0].path.check_points.reduce(
+          (next, curr) => {
+            return (next += curr.next_check_point_distance);
+          },
+          0,
+        );
+        if (order[0].ended_at) {
+          const timeInPath =
+            order[0].ended_at?.valueOf() - order[0].created_at.valueOf();
+          await this.prismaService.forklift.update({
+            where: {
+              id: forklift.id,
+            },
+            data: {
+              average_speed: averageLength / new Date(timeInPath).getMinutes(),
+            },
+          });
+        }
       }
       return;
     } catch (err) {
