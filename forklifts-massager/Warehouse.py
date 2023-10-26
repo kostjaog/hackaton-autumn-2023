@@ -35,7 +35,7 @@ class Warehouse:
                         "coordY": str(cords[0][1]),
                         "name": "#"+str(warehouse_id)}
 
-        r = requests.post('http://kostjaog.ru/api/warehouses', data=payload)
+        r = requests.post('http://forklift-tracker.kostjaog.ru/api/warehouses', data=payload)
         # init random number of workers
         for _ in range(6):#randint(6, 15)):
             self.add_new_forklift()

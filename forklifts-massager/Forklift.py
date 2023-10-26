@@ -57,7 +57,7 @@ class Forklift:
         self.speed = uniform(0.18, 0.22)
         
         payload ={"warehouse_name": "#"+str(warehouse_id), "name": forklift_id,"last_tm_date":self.last_service_date.isoformat()}
-        r = requests.post('http://kostjaog.ru/api/forklifts', data=payload)
+        r = requests.post('http://forklift-tracker.kostjaog.ru/api/forklifts', data=payload)
           # random speed in m/s
         # self.credentials = pika.PlainCredentials('rmuser', 'rmpassword')
         # self.connection = pika.BlockingConnection(pika.ConnectionParameters(host = rabbit['host'], port = rabbit['port'],virtual_host = '/',credentials = self.credentials))

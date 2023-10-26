@@ -18,7 +18,7 @@ const Map = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    fetch("http://kostjaog.ru/api/warehouses").then(async (res) => {
+    fetch("http://forklift-tracker.kostjaog.ru/api/warehouses").then(async (res) => {
       const data = await res.json();
 
       console.log(data);
