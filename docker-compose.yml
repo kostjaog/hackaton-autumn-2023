@@ -1,0 +1,62 @@
+services:
+  forklift-tracker-database:
+    image: postgres:13.3
+    container_name: forklift-tracker-database
+    networks:
+      - forklift-tracker-network
+    environment:
+      POSTGRES_DB: 'postgres'
+      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: 'root'
+      PGDATA: '/var/lib/postgresql/data/root'
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U root -d postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+  forklift-tracker-rabbitmq:
+    container_name: forklift-tracker-rabbitmq
+    networks:
+      - forklift-tracker-network
+    image: rabbitmq:3.10.7-management
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmuser
+      - RABBITMQ_DEFAULT_PASS=rmpassword
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    depends_on:
+      - forklift-tracker-database
+  forklift-tracker-api:
+    build:
+      context: ./forklift-tracker-api
+      dockerfile: ./Dockerfile
+    container_name: forklift-tracker-api
+    networks:
+      - forklift-tracker-network
+    ports:
+      - '3000:3000'
+    depends_on:
+      - forklift-tracker-database
+    volumes:
+      - ./src:/app/src
+volumes:
+    postgres:
+networks:
+  forklift-tracker-network:
