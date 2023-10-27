@@ -59,7 +59,7 @@ const Warehouse = () => {
 
   React.useEffect(() => {
     const getData = () => {
-      fetch(`http://81.31.244.133/api/warehouses/${id.pathname.replace("/warehouse/", "")}`).then(
+      fetch(`http://forklift-tracker.kostjaog.ru/api/warehouses/${id.pathname.replace("/warehouse/", "")}`).then(
         async (res) => {
           const data = await res.json();
 

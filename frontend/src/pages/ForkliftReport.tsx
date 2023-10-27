@@ -45,7 +45,7 @@ const ForkliftReport = () => {
   // React.useEffect(() => console.log(startDate), [startDate]);
 
   React.useEffect(() => {
-    fetch(`http://81.31.244.133/api/forklifts/${id}`).then(async (res) => {
+    fetch(`http://forklift-tracker.kostjaog.ru/api/forklifts/${id}`).then(async (res) => {
       const data = await res.json();
       // console.log(data);
       if (res.status === 200) {
@@ -63,7 +63,7 @@ const ForkliftReport = () => {
   const getStatistics = (order: Order) => {
     setStartDate(null);
     fetch(
-      `http://81.31.244.133/api/forklifts/statistics/${
+      `http://forklift-tracker.kostjaog.ru/api/forklifts/statistics/${
         item?.id
       }/${startDate[0].toISOString()}/${startDate[1].toISOString()}`
     ).then(async (res) => {
